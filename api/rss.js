@@ -8,6 +8,7 @@ const FLUX = {
     { url: 'https://ansm.sante.fr/rss/actualites',                  src: 'ANSM' },
     { url: 'https://www.inserm.fr/rss/',                            src: 'INSERM' },
     { url: 'https://www.anses.fr/fr/rss.xml',                       src: 'ANSES' },
+    { url: 'https://agriculture.gouv.fr/rss.xml',                   src: 'Min. Agriculture' },
     { url: 'https://www.france-assos-sante.org/feed',               src: 'France Assos Santé' },
     { url: 'https://www.lemonde.fr/sante/rss_full.xml',             src: 'Le Monde Santé' },
   ],
@@ -25,7 +26,6 @@ const FLUX = {
     { url: 'https://www.agefiph.fr/rss.xml',                        src: 'Agefiph' },
     { url: 'https://www.handirect.fr/feed/',                        src: 'Handirect' },
     { url: 'https://www.has-sante.fr/feed/Rss2.jsp?id=p_3081452',  src: 'HAS — Recommandations' },
-    { url: 'https://agriculture.gouv.fr/rss.xml',                   src: 'Min. Agriculture' },
     { url: 'https://www.fondation-abbe-pierre.fr/rss',              src: 'Fondation Abbé Pierre' },
   ],
   soins: [
