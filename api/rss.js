@@ -14,7 +14,7 @@ const FLUX = {
   social: [
     { url: 'https://www.service-public.fr/rss/actualites.xml',      src: 'Service-Public.fr' },
     { url: 'https://www.vie-publique.fr/rss/actualites.xml',        src: 'Vie Publique' },
-    { url: 'https://epss.fr/feed',                                   src: 'EPSS — Veille sociale' },
+    { url: 'https://en3s.fr/feed',                                  src: 'EN3S' },
     { url: 'https://www.fondation-abbe-pierre.fr/rss',              src: 'Fondation Abbé Pierre' },
     { url: 'https://www.lemonde.fr/logement/rss_full.xml',          src: 'Le Monde Logement' },
     { url: 'https://www.documentation-sociale.org/feed',            src: 'Documentation sociale' },
