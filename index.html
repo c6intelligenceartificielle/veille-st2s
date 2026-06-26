@@ -12,6 +12,7 @@
     --cyan:   #0e7490; --cyan-c: #e0f2f7;
     --terre:  #8c3a1b; --terr-c: #fbeee9;
     --ambre:  #7a4f0a; --ambr-c: #fdf3e3;
+    --rose:   #8b1a4a; --rose-c: #fce8f1;
     --fond: #f5f6f8; --bord: #dde1e9;
     --txt: #4a5568; --txt2: #718096;
     --blanc: #fff; --noir: #1a202c;
@@ -23,99 +24,132 @@
 
   /* ── HEADER ── */
   header { background: var(--blanc); border-bottom: 1px solid var(--bord); padding: 0 2rem; position: sticky; top: 0; z-index: 100; box-shadow: var(--ombre); }
-  .hinner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; flex-wrap: wrap; }
-  .htitle h1 { font-size: 18px; font-weight: 700; color: var(--bleu); letter-spacing: -.3px; }
+  .hinner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 0; flex-wrap: wrap; }
+  .htitle h1 { font-size: 17px; font-weight: 700; color: var(--bleu); letter-spacing: -.3px; }
   .htitle p  { font-size: 12px; color: var(--txt2); margin-top: 1px; }
-  .hbtns { display: flex; align-items: center; gap: 10px; }
+  .hbtns { display: flex; align-items: center; gap: 8px; }
 
-  .btn-gen { display: flex; align-items: center; gap: 8px; background: var(--bleu); color: #fff; border: none; border-radius: var(--rs); padding: 9px 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s, transform .1s; }
+  .btn-gen { display: flex; align-items: center; gap: 7px; background: var(--bleu); color: #fff; border: none; border-radius: var(--rs); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s, transform .1s; }
   .btn-gen:hover { background: #153a6e; }
   .btn-gen:active { transform: scale(.98); }
   .btn-gen:disabled { opacity: .55; cursor: not-allowed; transform: none; }
-
-  .btn-sec { display: flex; align-items: center; gap: 6px; background: var(--blanc); color: var(--txt); border: 1px solid var(--bord); border-radius: var(--rs); padding: 9px 14px; font-size: 13px; cursor: pointer; transition: background .15s; }
+  .btn-sec { display: flex; align-items: center; gap: 5px; background: var(--blanc); color: var(--txt); border: 1px solid var(--bord); border-radius: var(--rs); padding: 8px 13px; font-size: 12px; cursor: pointer; transition: background .15s; }
   .btn-sec:hover { background: var(--fond); }
 
   /* ── FILTRES ── */
   .filtres { background: var(--blanc); border-bottom: 1px solid var(--bord); padding: 0 2rem; }
-  .finner { max-width: 1100px; margin: 0 auto; padding: 10px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .flabel { font-size: 12px; font-weight: 600; color: var(--txt2); text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+  .finner  { max-width: 1100px; margin: 0 auto; padding: 8px 0; display: flex; flex-direction: column; gap: 7px; }
+  .frow    { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .flabel  { font-size: 11px; font-weight: 700; color: var(--txt2); text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; flex-shrink: 0; min-width: 50px; }
 
-  /* ── DROPDOWN THÈMES ── */
+  /* Dropdown thèmes */
   .dropdown-themes { position: relative; }
-  .dropdown-btn { display: flex; align-items: center; gap: 8px; background: var(--blanc); color: var(--txt); border: 1px solid var(--bord); border-radius: var(--rs); padding: 7px 14px; font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color .15s, box-shadow .15s; min-width: 240px; justify-content: space-between; }
+  .dropdown-btn { display: flex; align-items: center; gap: 8px; background: var(--blanc); color: var(--txt); border: 1px solid var(--bord); border-radius: var(--rs); padding: 6px 12px; font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color .15s, box-shadow .15s; min-width: 220px; justify-content: space-between; }
   .dropdown-btn:hover { border-color: var(--bleu); }
   .dropdown-btn.open { border-color: var(--bleu); box-shadow: 0 0 0 2px rgba(26,68,128,.12); }
-  .dropdown-arrow { font-size: 10px; transition: transform .15s; color: var(--txt2); }
+  .dropdown-arrow { font-size: 9px; transition: transform .15s; color: var(--txt2); }
   .dropdown-btn.open .dropdown-arrow { transform: rotate(180deg); }
-  .dropdown-panel { display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 260px; background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); box-shadow: 0 4px 16px rgba(0,0,0,.10); z-index: 200; padding: 6px 0; }
+  .dropdown-panel { display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 250px; background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); box-shadow: 0 4px 18px rgba(0,0,0,.11); z-index: 200; padding: 5px 0; }
   .dropdown-panel.open { display: block; }
-  .dropdown-panel label { display: flex; align-items: center; gap: 10px; padding: 8px 16px; font-size: 13px; cursor: pointer; color: var(--txt); transition: background .1s; }
+  .dropdown-panel label { display: flex; align-items: center; gap: 9px; padding: 7px 14px; font-size: 13px; cursor: pointer; color: var(--txt); transition: background .1s; }
   .dropdown-panel label:hover { background: var(--fond); }
-  .dropdown-panel input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--bleu); cursor: pointer; flex-shrink: 0; }
+  .dropdown-panel input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--bleu); cursor: pointer; flex-shrink: 0; }
   .dropdown-divider { height: 1px; background: var(--bord); margin: 4px 0; }
-  .dropdown-all { font-size: 11px; color: var(--txt2); padding: 5px 16px 3px; display: flex; gap: 12px; }
+  .dropdown-all { font-size: 11px; color: var(--txt2); padding: 4px 14px 2px; display: flex; gap: 10px; }
   .dropdown-all button { background: none; border: none; color: var(--bleu); font-size: 11px; cursor: pointer; padding: 0; text-decoration: underline; }
 
+  /* Niveau chips */
+  .nchips { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .nchip  { background: var(--fond); color: var(--txt2); border: 1px solid var(--bord); border-radius: 999px; padding: 3px 11px; font-size: 12px; font-weight: 500; cursor: pointer; transition: background .12s, border-color .12s, color .12s; white-space: nowrap; }
+  .nchip:hover  { border-color: var(--bleu); color: var(--bleu); background: var(--bleu-c); }
+  .nchip.active { background: var(--bleu); color: #fff; border-color: var(--bleu); }
+
+  /* Barre de recherche */
+  .search-wrap { position: relative; display: flex; align-items: center; margin-left: auto; }
+  .search-ico  { position: absolute; left: 9px; font-size: 13px; pointer-events: none; line-height: 1; }
+  .search-input { border: 1px solid var(--bord); border-radius: var(--rs); padding: 6px 28px 6px 30px; font-size: 13px; color: var(--noir); background: var(--blanc); outline: none; transition: border-color .15s, box-shadow .15s; width: 230px; }
+  .search-input:focus { border-color: var(--bleu); box-shadow: 0 0 0 2px rgba(26,68,128,.10); }
+  .search-input::placeholder { color: var(--txt2); }
+  .search-clear { position: absolute; right: 8px; background: none; border: none; color: var(--txt2); cursor: pointer; font-size: 14px; display: none; align-items: center; padding: 0; line-height: 1; }
+  .search-clear:hover { color: var(--noir); }
+
   /* ── STATUS ── */
-  .status-zone { max-width: 1100px; margin: 1rem auto 0; padding: 0 2rem; }
-  .sbar { font-size: 13px; color: var(--txt2); display: flex; align-items: center; gap: 8px; min-height: 22px; }
-  .spin { width: 14px; height: 14px; border: 2px solid var(--bord); border-top-color: var(--bleu); border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+  .status-zone { max-width: 1100px; margin: .8rem auto 0; padding: 0 2rem; }
+  .sbar  { font-size: 13px; color: var(--txt2); display: flex; align-items: center; gap: 8px; min-height: 20px; }
+  .spin  { width: 13px; height: 13px; border: 2px solid var(--bord); border-top-color: var(--bleu); border-radius: 50%; animation: spin .7s linear infinite; display: none; flex-shrink: 0; }
   .sbar.loading .spin { display: block; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── MAIN ── */
-  main { max-width: 1100px; margin: 1.5rem auto 4rem; padding: 0 2rem; }
+  main { max-width: 1100px; margin: 1.2rem auto 4rem; padding: 0 2rem; }
 
   .empty { text-align: center; padding: 5rem 2rem; color: var(--txt2); }
-  .empty .ico { font-size: 52px; opacity: .2; margin-bottom: 1rem; }
-  .empty h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--txt); }
-  .empty p  { font-size: 14px; max-width: 400px; margin: 0 auto; line-height: 1.7; }
+  .empty .ico { font-size: 48px; opacity: .2; margin-bottom: 1rem; }
+  .empty h2   { font-size: 19px; font-weight: 600; margin-bottom: 8px; color: var(--txt); }
+  .empty p    { font-size: 13px; max-width: 400px; margin: 0 auto; line-height: 1.7; }
 
-  .stats { background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); padding: 12px 20px; display: flex; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
-  .stat { text-align: center; }
-  .stat-n { font-size: 22px; font-weight: 700; color: var(--bleu); }
+  .stats { background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); padding: 10px 18px; display: flex; gap: 2rem; margin-bottom: 1.2rem; flex-wrap: wrap; align-items: center; }
+  .stat   { text-align: center; }
+  .stat-n { font-size: 20px; font-weight: 700; color: var(--bleu); }
   .stat-l { font-size: 11px; color: var(--txt2); text-transform: uppercase; letter-spacing: .4px; }
 
-  .section { margin-bottom: 2.5rem; }
-  .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .sec-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .sec-head h2 { font-size: 15px; font-weight: 700; }
-  .sec-cnt { font-size: 12px; color: var(--txt2); margin-left: auto; }
+  .section   { margin-bottom: 2.2rem; }
+  .sec-head  { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid; }
+  .sec-dot   { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .sec-head h2 { font-size: 14px; font-weight: 700; }
+  .sec-niv  { display: flex; gap: 4px; flex-wrap: wrap; margin-left: 6px; }
+  .sec-niv span { font-size: 10px; padding: 1px 7px; border-radius: 999px; font-weight: 500; opacity: .75; }
+  .sec-cnt   { font-size: 12px; color: var(--txt2); margin-left: auto; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
 
-  .card { background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--ombre); transition: box-shadow .15s; }
-  .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,.10); }
+  .card { background: var(--blanc); border: 1px solid var(--bord); border-left: 3px solid; border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 9px; box-shadow: var(--ombre); transition: box-shadow .15s, transform .12s; }
+  .card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.10); transform: translateY(-1px); }
 
-  .cmeta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .src { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: .4px; border: 1px solid; }
-  .cdate { font-size: 11px; color: var(--txt2); margin-left: auto; }
+  .cmeta  { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .src    { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .4px; border: 1px solid; }
+  .cdate  { font-size: 11px; color: var(--txt2); margin-left: auto; white-space: nowrap; }
 
-  .ctitle { font-size: 14px; font-weight: 700; line-height: 1.4; color: var(--noir); overflow-wrap: break-word; word-break: break-word; }
-  .csum   { font-size: 13px; color: var(--txt); line-height: 1.6; flex: 1; overflow-wrap: break-word; word-break: break-word; }
+  .ctitle { font-size: 13px; font-weight: 700; line-height: 1.45; color: var(--noir); overflow-wrap: break-word; word-break: break-word; }
+  .csum   { font-size: 12.5px; color: var(--txt); line-height: 1.6; flex: 1; overflow-wrap: break-word; word-break: break-word; }
   .csum em { color: var(--txt2); font-style: italic; }
 
-  .cfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid var(--bord); flex-wrap: wrap; }
-  .niveaux { display: flex; gap: 4px; flex-wrap: wrap; }
-  .ntag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: var(--fond); color: var(--txt2); border: 1px solid var(--bord); }
-  .clink { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--bleu); text-decoration: none; white-space: nowrap; }
+  .cfoot  { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid var(--bord); flex-wrap: wrap; }
+  .niveaux { display: flex; gap: 3px; flex-wrap: wrap; }
+  .ntag   { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: var(--fond); color: var(--txt2); border: 1px solid var(--bord); }
+  .clink  { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--bleu); text-decoration: none; white-space: nowrap; }
   .clink:hover { text-decoration: underline; }
 
-  .err-card { background: #fff3f3; border: 1px solid #f5c0c0; border-radius: var(--r); padding: 16px 20px; font-size: 13px; color: #900; line-height: 1.7; }
-  .err-card strong { font-weight: 600; }
+  mark { background: #fef08a; border-radius: 2px; padding: 0 1px; font-style: normal; color: inherit; }
 
-  footer { text-align: center; padding: 1.5rem; font-size: 12px; color: var(--txt2); border-top: 1px solid var(--bord); background: var(--blanc); }
+  .no-results { text-align: center; padding: 3rem; color: var(--txt2); font-size: 14px; line-height: 1.8; }
 
-  @media (max-width: 640px) {
+  .err-card { background: #fff3f3; border: 1px solid #f5c0c0; border-radius: var(--r); padding: 14px 18px; font-size: 13px; color: #900; line-height: 1.7; }
+
+  footer { text-align: center; padding: 1.2rem 2rem; font-size: 11px; color: var(--txt2); border-top: 1px solid var(--bord); background: var(--blanc); line-height: 1.9; }
+
+  @media (max-width: 680px) {
     header, .filtres { padding: 0 1rem; }
     main, .status-zone { padding: 0 1rem; }
     .grid { grid-template-columns: 1fr; }
+    .search-wrap { margin-left: 0; width: 100%; }
+    .search-input { width: 100%; }
+    .hbtns .btn-sec span { display: none; }
   }
+
+  /* ── IMPRESSION ── */
   @media print {
-    header, .filtres, .status-zone, .btn-gen, .btn-sec, .clink { display: none !important; }
-    body { background: #fff; }
-    .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+    header, .filtres, .status-zone, .hbtns { display: none !important; }
+    body { background: #fff; font-size: 10.5pt; color: #000; }
+    .stats { border: 1px solid #bbb; break-inside: avoid; }
+    .stat-n { color: #000; }
+    .card { box-shadow: none !important; transform: none !important; border: 1px solid #ccc !important; border-left: 3px solid !important; break-inside: avoid; margin-bottom: 6px; }
+    .section { break-inside: avoid; }
+    .sec-head { border-color: currentColor !important; }
+    .clink::after { content: " → " attr(href); font-size: 8.5pt; color: #555; font-weight: normal; }
+    mark { background: none; text-decoration: underline; }
+    main { margin: 0; padding: 0; }
+    footer { font-size: 9pt; }
   }
 </style>
 </head>
@@ -125,10 +159,10 @@
   <div class="hinner">
     <div class="htitle">
       <h1>📰 Veille informationnelle</h1>
-      <p>ST2S · BTS SP3S · CAPET SMS — revue de presse hebdomadaire</p>
+      <p>ST2S · BTS SP3S · CAPET SMS · Agrég STMS — revue de presse</p>
     </div>
     <div class="hbtns">
-      <button class="btn-sec" onclick="window.print()">🖨️ PDF</button>
+      <button class="btn-sec" onclick="window.print()">🖨️ <span>Imprimer / PDF</span></button>
       <button class="btn-gen" id="btnGen" onclick="generer()">🔄 Générer la revue</button>
     </div>
   </div>
@@ -136,26 +170,59 @@
 
 <div class="filtres">
   <div class="finner">
-    <span class="flabel">Thèmes</span>
-    <div class="dropdown-themes">
-      <button class="dropdown-btn" id="dropdownBtn" onclick="toggleDropdown()">
-        <span id="dropdownLabel">Tous les thèmes (6 sélectionnés)</span>
-        <span class="dropdown-arrow">▼</span>
-      </button>
-      <div class="dropdown-panel" id="dropdownPanel">
-        <div class="dropdown-all">
-          <button onclick="selectAll()">Tout sélectionner</button>
-          <button onclick="deselectAll()">Tout désélectionner</button>
+
+    <!-- Ligne 1 : sélection des thèmes + recherche -->
+    <div class="frow">
+      <span class="flabel">Thèmes</span>
+      <div class="dropdown-themes">
+        <button class="dropdown-btn" id="dropdownBtn" onclick="toggleDropdown()">
+          <span id="dropdownLabel">Tous les thèmes (7 sélectionnés)</span>
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="dropdown-panel" id="dropdownPanel">
+          <div class="dropdown-all">
+            <button onclick="selectAll()">Tout sélectionner</button>
+            <button onclick="deselectAll()">Tout désélectionner</button>
+          </div>
+          <div class="dropdown-divider"></div>
+          <label><input type="checkbox" value="sante"  checked onchange="updateLabel()"> 🫀 Santé publique</label>
+          <label><input type="checkbox" value="social" checked onchange="updateLabel()"> 🛡️ Protection sociale</label>
+          <label><input type="checkbox" value="medico" checked onchange="updateLabel()"> 🏥 Médico-social</label>
+          <label><input type="checkbox" value="soins"  checked onchange="updateLabel()"> 💊 Système de soins</label>
+          <label><input type="checkbox" value="stms"   checked onchange="updateLabel()"> 📊 ST2S / STMS</label>
+          <label><input type="checkbox" value="sp3s"   checked onchange="updateLabel()"> 🤝 BTS SP3S</label>
+          <label><input type="checkbox" value="agreg"  checked onchange="updateLabel()"> 🎓 Prépa Agrég / CAPET</label>
         </div>
-        <div class="dropdown-divider"></div>
-        <label><input type="checkbox" value="sante" checked onchange="updateLabel()"> 🫀 Santé publique</label>
-        <label><input type="checkbox" value="social" checked onchange="updateLabel()"> 🛡️ Protection sociale</label>
-        <label><input type="checkbox" value="medico" checked onchange="updateLabel()"> 🏥 Médico-social</label>
-        <label><input type="checkbox" value="soins" checked onchange="updateLabel()"> 💊 Système de soins</label>
-        <label><input type="checkbox" value="stms" checked onchange="updateLabel()"> 📊 ST2S / STMS</label>
-        <label><input type="checkbox" value="sp3s" checked onchange="updateLabel()"> 🤝 BTS SP3S</label>
+      </div>
+
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Rechercher un mot-clé…"
+          oninput="onSearch(this.value)"
+          autocomplete="off"
+        >
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Effacer">✕</button>
       </div>
     </div>
+
+    <!-- Ligne 2 : filtre par niveau -->
+    <div class="frow">
+      <span class="flabel">Niveau</span>
+      <div class="nchips">
+        <button class="nchip active" data-n=""           onclick="setNiveau(this)">Tous</button>
+        <button class="nchip"        data-n="1re ST2S"   onclick="setNiveau(this)">1re ST2S</button>
+        <button class="nchip"        data-n="Tle ST2S"   onclick="setNiveau(this)">Tle ST2S</button>
+        <button class="nchip"        data-n="BTS SP3S"   onclick="setNiveau(this)">BTS SP3S</button>
+        <button class="nchip"        data-n="DECESF"     onclick="setNiveau(this)">DECESF</button>
+        <button class="nchip"        data-n="CAPET SMS"  onclick="setNiveau(this)">CAPET SMS</button>
+        <button class="nchip"        data-n="Agrég STMS" onclick="setNiveau(this)">Agrég STMS</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -170,45 +237,47 @@
   <div class="empty">
     <div class="ico">📰</div>
     <h2>Ta revue de presse hebdomadaire</h2>
-    <p>Clique sur <strong>Générer la revue</strong> pour récupérer les dernières publications de tes sources institutionnelles et médias.</p>
+    <p>Sélectionne tes thèmes et niveaux, puis clique sur <strong>Générer la revue</strong> pour récupérer les dernières publications de tes sources institutionnelles.</p>
   </div>
 </main>
 
 <footer>
-  Sources : HAS · Santé Publique France · ANSM · INSERM · IRDES · CNSA · Agefiph · INSEE · Vie Publique · Légifrance · Service-Public.fr · Min. Travail · Sénat · EPSS · Documentation sociale · Fondation Abbé Pierre · OVE · France Culture · Alternatives Économiques · Sciences et Avenir · Le Monde · Franceinfo · La Croix
+  <strong>Sources :</strong> HAS · Santé Publique France · ANSM · INSERM · ANSES · France Assos Santé · IRDES · CNSA · Agefiph · Handirect · EHESP · EN3S · INSEE · CREDOC · Centre Obs. Société · Obs. des inégalités · Vie Publique · Légifrance · Service-Public.fr · Min. Travail · Min. Agriculture · Sénat · EPSS · Documentation sociale · Fondation Abbé Pierre · OVE · OFDT · Novethic · France Culture · France Inter · Alternatives Économiques · Sciences et Avenir · Le Monde · Franceinfo
 </footer>
 
 <script>
+// ── CONFIG THÈMES ─────────────────────────────────────────────────────────────
 const T = {
-  sante:  { label:'Santé publique',    color:'#1a4480', bg:'#e8f0fb', niveaux:['1re ST2S','Tle ST2S'] },
-  social: { label:'Protection sociale',color:'#1b7a4a', bg:'#e6f4ee', niveaux:['Tle ST2S','BTS SP3S'] },
-  medico: { label:'Médico-social',     color:'#4a3b8c', bg:'#eeecfb', niveaux:['BTS SP3S','DECESF'] },
-  soins:  { label:'Système de soins',  color:'#0e7490', bg:'#e0f2f7', niveaux:['Tle ST2S','BTS SP3S'] },
-  stms:   { label:'ST2S / STMS',       color:'#8c3a1b', bg:'#fbeee9', niveaux:['1re ST2S','CAPET SMS'] },
-  sp3s:   { label:'BTS SP3S',          color:'#7a4f0a', bg:'#fdf3e3', niveaux:['BTS SP3S','DECESF'] },
+  sante:  { label:'Santé publique',      color:'#1a4480', bg:'#e8f0fb', niveaux:['1re ST2S','Tle ST2S'] },
+  social: { label:'Protection sociale',  color:'#1b7a4a', bg:'#e6f4ee', niveaux:['Tle ST2S','BTS SP3S'] },
+  medico: { label:'Médico-social',       color:'#4a3b8c', bg:'#eeecfb', niveaux:['BTS SP3S','DECESF'] },
+  soins:  { label:'Système de soins',    color:'#0e7490', bg:'#e0f2f7', niveaux:['Tle ST2S','BTS SP3S'] },
+  stms:   { label:'ST2S / STMS',         color:'#8c3a1b', bg:'#fbeee9', niveaux:['1re ST2S','CAPET SMS'] },
+  sp3s:   { label:'BTS SP3S',            color:'#7a4f0a', bg:'#fdf3e3', niveaux:['BTS SP3S','DECESF'] },
+  agreg:  { label:'Prépa Agrég / CAPET', color:'#8b1a4a', bg:'#fce8f1', niveaux:['CAPET SMS','Agrég STMS'] },
 };
 
 const API_URL = '/api/rss';
-let articles = [];
+let articles    = [];
+let niveauFilter = '';
+let searchQuery  = '';
+let searchTimer;
 
-// ── DROPDOWN ───────────────────────────────────────────────────────────────
+// ── DROPDOWN THÈMES ───────────────────────────────────────────────────────────
 function toggleDropdown() {
   document.getElementById('dropdownBtn').classList.toggle('open');
   document.getElementById('dropdownPanel').classList.toggle('open');
 }
-
 function updateLabel() {
   const checked = [...document.querySelectorAll('#dropdownPanel input:checked')];
   const total   = document.querySelectorAll('#dropdownPanel input').length;
   const label   = document.getElementById('dropdownLabel');
-  if (checked.length === 0)     label.textContent = 'Aucun thème sélectionné';
+  if (checked.length === 0)          label.textContent = 'Aucun thème sélectionné';
   else if (checked.length === total) label.textContent = `Tous les thèmes (${total} sélectionnés)`;
   else label.textContent = checked.map(cb => cb.closest('label').textContent.trim()).join(', ');
 }
-
 function selectAll()   { document.querySelectorAll('#dropdownPanel input').forEach(cb => cb.checked = true);  updateLabel(); }
 function deselectAll() { document.querySelectorAll('#dropdownPanel input').forEach(cb => cb.checked = false); updateLabel(); }
-
 document.addEventListener('click', e => {
   if (!e.target.closest('.dropdown-themes')) {
     document.getElementById('dropdownBtn').classList.remove('open');
@@ -216,18 +285,59 @@ document.addEventListener('click', e => {
   }
 });
 
+// ── FILTRE NIVEAU ─────────────────────────────────────────────────────────────
+function setNiveau(btn) {
+  niveauFilter = btn.dataset.n;
+  document.querySelectorAll('.nchip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  if (articles.length) filtrer();
+}
+
+// ── RECHERCHE ─────────────────────────────────────────────────────────────────
+function normalize(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+function onSearch(val) {
+  clearTimeout(searchTimer);
+  document.getElementById('searchClear').style.display = val ? 'flex' : 'none';
+  searchTimer = setTimeout(() => {
+    searchQuery = val.trim();
+    if (articles.length) filtrer();
+  }, 250);
+}
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').style.display = 'none';
+  searchQuery = '';
+  if (articles.length) filtrer();
+}
+function highlight(text, q) {
+  if (!q || !text) return text || '';
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
+// ── FILTRE CLIENT-SIDE ────────────────────────────────────────────────────────
+function getActifs() {
+  return [...document.querySelectorAll('#dropdownPanel input:checked')].map(cb => cb.value);
+}
+function filtrer() {
+  afficher(getActifs());
+}
+
+// ── STATUS ───────────────────────────────────────────────────────────────────
 function setStatus(msg, loading = false) {
   document.getElementById('stxt').textContent = msg;
   document.getElementById('sbar').classList.toggle('loading', loading);
 }
 
-// ── GÉNÉRATION ─────────────────────────────────────────────────────────────
+// ── GÉNÉRATION ───────────────────────────────────────────────────────────────
 async function generer() {
   const btn = document.getElementById('btnGen');
   btn.disabled = true;
   articles = [];
 
-  const actifs = [...document.querySelectorAll('#dropdownPanel input:checked')].map(cb => cb.value);
+  const actifs = getActifs();
   if (!actifs.length) {
     setStatus('⚠️ Sélectionne au moins un thème.');
     btn.disabled = false;
@@ -235,7 +345,6 @@ async function generer() {
   }
 
   setStatus('📡 Récupération des flux RSS en cours…', true);
-
   try {
     const res  = await fetch(`${API_URL}?themes=${actifs.join(',')}`);
     if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
@@ -244,9 +353,7 @@ async function generer() {
 
     if (!articles.length) {
       setStatus('⚠️ Aucun article récupéré. Certaines sources sont peut-être temporairement indisponibles.');
-      document.getElementById('main').innerHTML = `<div class="err-card">
-        Aucun article n'a pu être récupéré. Réessaie dans quelques minutes.
-      </div>`;
+      document.getElementById('main').innerHTML = `<div class="err-card">Aucun article n'a pu être récupéré. Réessaie dans quelques minutes.</div>`;
     } else {
       const now   = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
       const nbSrc = new Set(articles.map(a => a.source)).size;
@@ -255,16 +362,13 @@ async function generer() {
     }
   } catch (err) {
     setStatus('❌ Impossible de contacter le serveur.');
-    document.getElementById('main').innerHTML = `<div class="err-card">
-      <strong>Erreur :</strong> ${err.message}<br><br>
-      Vérifie que l'application est bien déployée sur Vercel et que la fonction <code>/api/rss</code> est active.
-    </div>`;
+    document.getElementById('main').innerHTML = `<div class="err-card"><strong>Erreur :</strong> ${err.message}<br><br>Vérifie que l'application est bien déployée sur Vercel et que la fonction <code>/api/rss</code> est active.</div>`;
   } finally {
     btn.disabled = false;
   }
 }
 
-// ── RENDU ───────────────────────────────────────────────────────────────────
+// ── RENDU ─────────────────────────────────────────────────────────────────────
 function fmtDate(iso) {
   if (!iso) return '';
   try { return new Date(iso).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }); }
@@ -272,42 +376,76 @@ function fmtDate(iso) {
 }
 
 function afficher(actifs) {
-  const now = new Date();
+  const q = normalize(searchQuery);
+
+  // Filtrage complet
+  const filtered = articles.filter(a => {
+    if (!actifs.includes(a.themeId)) return false;
+    if (niveauFilter && !a.niveaux.includes(niveauFilter)) return false;
+    if (q) {
+      const matchTitre  = normalize(a.titre).includes(q);
+      const matchResume = normalize(a.resume).includes(q);
+      const matchSrc    = normalize(a.source).includes(q);
+      if (!matchTitre && !matchResume && !matchSrc) return false;
+    }
+    return true;
+  });
+
+  const nbSrc = new Set(filtered.map(a => a.source)).size;
+  const now   = new Date();
+  const isFiltered = searchQuery || niveauFilter;
+
   let html = `
     <div class="stats">
-      <div class="stat"><div class="stat-n">${articles.length}</div><div class="stat-l">Articles</div></div>
-      <div class="stat"><div class="stat-n">${new Set(articles.map(a=>a.source)).size}</div><div class="stat-l">Sources</div></div>
-      <div class="stat"><div class="stat-n">${actifs.length}</div><div class="stat-l">Thèmes</div></div>
-      <div style="margin-left:auto;font-size:12px;color:var(--txt2)">
-        Semaine du ${now.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}
+      <div class="stat"><div class="stat-n">${filtered.length}</div><div class="stat-l">Article${filtered.length > 1 ? 's' : ''}${isFiltered ? ' filtrés' : ''}</div></div>
+      <div class="stat"><div class="stat-n">${nbSrc}</div><div class="stat-l">Source${nbSrc > 1 ? 's' : ''}</div></div>
+      <div class="stat"><div class="stat-n">${actifs.length}</div><div class="stat-l">Thème${actifs.length > 1 ? 's' : ''}</div></div>
+      <div style="margin-left:auto;font-size:12px;color:var(--txt2);text-align:right">
+        ${now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
       </div>
     </div>`;
 
+  if (!filtered.length) {
+    html += `<div class="no-results">🔍 Aucun article ne correspond à ta recherche.<br><small>Essaie d'autres mots-clés ou modifie les filtres.</small></div>`;
+    document.getElementById('main').innerHTML = html;
+    return;
+  }
+
   for (const id of actifs) {
     const th   = T[id];
-    const arts = articles.filter(a => a.themeId === id);
+    if (!th) continue;
+    const arts = filtered.filter(a => a.themeId === id);
     if (!arts.length) continue;
 
-    const cards = arts.map(a => `
-      <div class="card">
+    const niveauxLabels = th.niveaux.map(n =>
+      `<span style="background:${th.bg};color:${th.color};border:1px solid ${th.color}33">${n}</span>`
+    ).join('');
+
+    const cards = arts.map(a => {
+      const titre  = highlight(a.titre,  searchQuery);
+      const resume = a.resume ? highlight(a.resume, searchQuery) : '';
+      return `
+      <div class="card" style="border-left-color:${th.color}">
         <div class="cmeta">
-          <span class="src" style="background:${th.bg};color:${th.color};border-color:${th.color}33">${a.source}</span>
+          <span class="src" style="background:${th.bg};color:${th.color};border-color:${th.color}44">${a.source}</span>
           <span class="cdate">${fmtDate(a.date)}</span>
         </div>
-        <div class="ctitle">${a.titre}</div>
-        <div class="csum">${a.resume ? a.resume : '<em>Résumé non disponible — clique sur l\'article pour le lire.</em>'}</div>
+        <div class="ctitle">${titre}</div>
+        <div class="csum">${resume || '<em>Résumé non disponible — clique sur l\'article pour le lire.</em>'}</div>
         <div class="cfoot">
-          <div class="niveaux">${a.niveaux.map(n=>`<span class="ntag">${n}</span>`).join('')}</div>
-          <a class="clink" href="${a.url}" target="_blank" rel="noopener noreferrer">Lire l'article ↗</a>
+          <div class="niveaux">${a.niveaux.map(n => `<span class="ntag">${n}</span>`).join('')}</div>
+          <a class="clink" href="${a.url}" target="_blank" rel="noopener noreferrer">Lire ↗</a>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
 
     html += `
       <div class="section">
-        <div class="sec-head">
+        <div class="sec-head" style="border-color:${th.color}22">
           <div class="sec-dot" style="background:${th.color}"></div>
           <h2 style="color:${th.color}">${th.label}</h2>
-          <span class="sec-cnt">${arts.length} article${arts.length>1?'s':''}</span>
+          <div class="sec-niv">${niveauxLabels}</div>
+          <span class="sec-cnt">${arts.length} article${arts.length > 1 ? 's' : ''}</span>
         </div>
         <div class="grid">${cards}</div>
       </div>`;
