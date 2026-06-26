@@ -8,7 +8,10 @@ const FLUX = {
     { url: 'https://ansm.sante.fr/rss/actualites',                  src: 'ANSM' },
     { url: 'https://www.inserm.fr/rss/',                            src: 'INSERM' },
     { url: 'https://www.anses.fr/fr/rss.xml',                       src: 'ANSES' },
+    { url: 'https://esante.gouv.fr/rss.xml',                        src: 'Numérique en santé' },
     { url: 'https://agriculture.gouv.fr/rss.xml',                   src: 'Min. Agriculture' },
+    { url: 'https://www.agence-biomedecine.fr/rss.xml',             src: 'Agence Biomédecine' },
+    { url: 'https://www.cns.sante.fr/rss.xml',                      src: 'Conférence nationale de santé' },
     { url: 'https://www.france-assos-sante.org/feed',               src: 'France Assos Santé' },
     { url: 'https://www.lemonde.fr/sante/rss_full.xml',             src: 'Le Monde Santé' },
   ],
@@ -16,6 +19,7 @@ const FLUX = {
     { url: 'https://www.service-public.fr/rss/actualites.xml',      src: 'Service-Public.fr' },
     { url: 'https://www.vie-publique.fr/rss/actualites.xml',        src: 'Vie Publique' },
     { url: 'https://en3s.fr/feed',                                  src: 'EN3S' },
+    { url: 'https://www.defenseurdesdroits.fr/rss.xml',             src: 'Défenseur des droits' },
     { url: 'https://www.fondation-abbe-pierre.fr/rss',              src: 'Fondation Abbé Pierre' },
     { url: 'https://www.lemonde.fr/logement/rss_full.xml',          src: 'Le Monde Logement' },
     { url: 'https://www.documentation-sociale.org/feed',            src: 'Documentation sociale' },
@@ -26,11 +30,15 @@ const FLUX = {
     { url: 'https://www.agefiph.fr/rss.xml',                        src: 'Agefiph' },
     { url: 'https://www.handirect.fr/feed/',                        src: 'Handirect' },
     { url: 'https://www.has-sante.fr/feed/Rss2.jsp?id=p_3081452',  src: 'HAS — Recommandations' },
+    { url: 'https://www.defenseurdesdroits.fr/rss.xml',             src: 'Défenseur des droits' },
+    { url: 'https://www.uniopss.asso.fr/rss.xml',                   src: 'UNIOPSS' },
     { url: 'https://www.fondation-abbe-pierre.fr/rss',              src: 'Fondation Abbé Pierre' },
   ],
   soins: [
     { url: 'https://www.irdes.fr/rss.xml',                          src: 'IRDES' },
     { url: 'https://www.has-sante.fr/feed/Rss2.jsp?id=p_3081452',  src: 'HAS — Recommandations' },
+    { url: 'https://www.agence-biomedecine.fr/rss.xml',             src: 'Agence Biomédecine' },
+    { url: 'https://www.cns.sante.fr/rss.xml',                      src: 'Conférence nationale de santé' },
     { url: 'https://www.sciencesetavenir.fr/rss.xml',               src: 'Sciences et Avenir' },
     { url: 'https://www.gouvernement.fr/rss/actualites.xml',        src: 'Gouvernement.fr' },
     { url: 'https://www.lemonde.fr/sante/rss_full.xml',             src: 'Le Monde Santé' },
@@ -46,6 +54,7 @@ const FLUX = {
   ],
   sp3s: [
     { url: 'https://travail-emploi.gouv.fr/rss/actualites.xml',     src: 'Min. Travail' },
+    { url: 'https://www.uniopss.asso.fr/rss.xml',                   src: 'UNIOPSS' },
     { url: 'https://www.senat.fr/rss/presse.xml',                   src: 'Sénat' },
     { url: 'https://www.legifrance.gouv.fr/rss/jorf.xml',           src: 'Légifrance — JO' },
     { url: 'https://www.gouvernement.fr/rss/actualites.xml',        src: 'Gouvernement.fr' },
@@ -99,10 +108,21 @@ function extrait(str, tag) {
 }
 
 function extraitLien(str) {
-  const atomM = str.match(/<link[^>]+href=["']([^"']+)["'][^>]*\/?>/i);
-  if (atomM) return atomM[1];
+  // Atom : <link href="..." /> ou <link rel="alternate" href="..." />
+  const atomHref = str.match(/<link[^>]+href=["']([^"']+)["'][^>]*\/?>/i);
+  if (atomHref) return safeUrl(atomHref[1]);
+  // Atom sans guillemets (rare)
+  const atomBare = str.match(/<link[^>]+href=([^\s>]+)[^>]*\/?>/i);
+  if (atomBare) return safeUrl(atomBare[1]);
+  // RSS 2.0 : <link>https://...</link> avec ou sans CDATA
   const rssM = str.match(/<link[^>]*>(?:<!\[CDATA\[([\s\S]*?)\]\]>|([^<]*))<\/link>/i);
-  return rssM ? (rssM[1] || rssM[2] || '').trim() : '';
+  return rssM ? safeUrl((rssM[1] || rssM[2] || '').trim()) : '';
+}
+
+function safeUrl(url) {
+  if (!url) return '';
+  const u = url.trim();
+  return /^https?:\/\//i.test(u) ? u : '';
 }
 
 function stripTags(str) {
@@ -112,7 +132,6 @@ function stripTags(str) {
 function cleanDesc(str) {
   if (!str) return '';
   return str
-    // 1. Décoder les entités HTML EN PREMIER
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
@@ -122,7 +141,6 @@ function cleanDesc(str) {
     .replace(/&rsquo;/g, "'")
     .replace(/&laquo;/g, '«')
     .replace(/&raquo;/g, '»')
-    // 2. Supprimer TOUTES les balises HTML ensuite
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
