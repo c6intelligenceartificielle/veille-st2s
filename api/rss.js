@@ -83,6 +83,43 @@ const NIVEAUX = {
   agreg:  ['CAPET SMS', 'Agrég STMS'],
 };
 
+// ─── Filtre de pertinence thématique ──────────────────────────────────────
+// Garde uniquement les articles en lien avec la santé ou la politique publique/sociale.
+const MOTS_CLES = [
+  // Santé
+  'santé','maladie','médical','médecin','médecine','soin','soins','hôpital','hopital',
+  'clinique','infirmier','infirmière','pharmacie','médicament','vaccin','vaccination',
+  'prévention','épidémie','pandémie','virus','cancer','diabète','obésité','nutrition',
+  'handicap','dépendance','autonomie','ehpad','alzheimer','démence','psychiatrie',
+  'psychologie','burnout','addiction','alcool','tabac','drogue','substance',
+  'grossesse','maternité','natalité','mortalité','espérance de vie','aidant',
+  'réadaptation','rééducation','soignant','aide-soignant','urgences','chu','chru',
+  'médecine de ville','désert médical','télémédecine','e-santé','numérique en santé',
+  // Protection sociale & politique sociale
+  'social','protection sociale','assurance maladie','sécurité sociale','retraite',
+  'chômage','allocation','rsa','caf','aide sociale','aah','apa','pch','aide à domicile',
+  'pauvreté','précarité','inégalité','logement','sans-abri','sdf','travail','emploi',
+  'famille','enfance','jeunesse','vieillissement','personnes âgées','senior','sénior',
+  'insertion','solidarité','accès aux droits','minima sociaux','revenu','salaire',
+  'travailleurs pauvres','fracture sociale','exclusion','vulnérabilité','cohésion',
+  'etablissement social','action sociale','travailleur social',
+  // Politique publique & institutionnel
+  'politique publique','réforme','loi','décret','ordonnance','financement','budget',
+  'service public','gouvernement','ministère','parlement','sénat','assemblée nationale',
+  'haut conseil','rapport','recommandation','has ','hcsp','drees','irdes','inserm',
+  'cnsa','anses','ansm','cnam','ars','cpam','mutuelle','complémentaire santé',
+  // Termes ST2S / SP3S / STMS
+  'st2s','sp3s','stms','médico-social','bts','capet','agrégation',
+  'éducation à la santé','promotion de la santé','déterminants','inégalités de santé',
+  'système de santé','offre de soins','parcours de soins','territoire de santé',
+];
+
+function estPertinent(titre, desc) {
+  const texte = (titre + ' ' + (desc || '')).toLowerCase();
+  return MOTS_CLES.some(mot => texte.includes(mot));
+}
+
+// ─── Parsing XML RSS/Atom minimal ─────────────────────────────────────────
 function parseXML(xml) {
   const items = [];
   const blocRegex = /<(item|entry)[^>]*>([\s\S]*?)<\/\1>/gi;
@@ -107,10 +144,13 @@ function extrait(str, tag) {
 }
 
 function extraitLien(str) {
+  // Atom : <link href="..." /> ou <link rel="alternate" href="..." />
   const atomHref = str.match(/<link[^>]+href=["']([^"']+)["'][^>]*\/?>/i);
   if (atomHref) return safeUrl(atomHref[1]);
+  // Atom sans guillemets (rare)
   const atomBare = str.match(/<link[^>]+href=([^\s>]+)[^>]*\/?>/i);
   if (atomBare) return safeUrl(atomBare[1]);
+  // RSS 2.0 : <link>https://...</link> avec ou sans CDATA
   const rssM = str.match(/<link[^>]*>(?:<!\[CDATA\[([\s\S]*?)\]\]>|([^<]*))<\/link>/i);
   return rssM ? safeUrl((rssM[1] || rssM[2] || '').trim()) : '';
 }
@@ -181,15 +221,17 @@ async function fetchFlux({ url, src }, themeId) {
     clearTimeout(timer);
     if (!res.ok) return [];
     const xml = await res.text();
-    return parseXML(xml).map(item => ({
-      themeId,
-      titre:   item.titre,
-      source:  src,
-      url:     item.lien,
-      resume:  item.desc || '',
-      date:    parseDate(item.date),
-      niveaux: NIVEAUX[themeId],
-    }));
+    return parseXML(xml)
+      .filter(item => estPertinent(item.titre, item.desc))
+      .map(item => ({
+        themeId,
+        titre:   item.titre,
+        source:  src,
+        url:     item.lien,
+        resume:  item.desc || '',
+        date:    parseDate(item.date),
+        niveaux: NIVEAUX[themeId],
+      }));
   } catch {
     return [];
   }
