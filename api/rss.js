@@ -39,7 +39,7 @@ const FLUX = {
     { url: 'https://www.has-sante.fr/feed/Rss2.jsp?id=p_3081452',  src: 'HAS — Recommandations' },
     { url: 'https://www.agence-biomedecine.fr/rss.xml',             src: 'Agence Biomédecine' },
     { url: 'https://www.cns.sante.fr/rss.xml',                      src: 'Conférence nationale de santé' },
-    { url: 'https://www.sciencesetavenir.fr/rss.xml',               src: 'Sciences et Avenir' },
+    { url: 'https://theconversation.com/fr/articles.atom',          src: 'The Conversation' },
     { url: 'https://www.gouvernement.fr/rss/actualites.xml',        src: 'Gouvernement.fr' },
     { url: 'https://www.lemonde.fr/sante/rss_full.xml',             src: 'Le Monde Santé' },
     { url: 'https://www.francetvinfo.fr/sante.rss',                 src: 'Franceinfo Santé' },
@@ -83,7 +83,6 @@ const NIVEAUX = {
   agreg:  ['CAPET SMS', 'Agrég STMS'],
 };
 
-// ─── Parsing XML RSS/Atom minimal ─────────────────────────────────────────
 function parseXML(xml) {
   const items = [];
   const blocRegex = /<(item|entry)[^>]*>([\s\S]*?)<\/\1>/gi;
@@ -108,13 +107,10 @@ function extrait(str, tag) {
 }
 
 function extraitLien(str) {
-  // Atom : <link href="..." /> ou <link rel="alternate" href="..." />
   const atomHref = str.match(/<link[^>]+href=["']([^"']+)["'][^>]*\/?>/i);
   if (atomHref) return safeUrl(atomHref[1]);
-  // Atom sans guillemets (rare)
   const atomBare = str.match(/<link[^>]+href=([^\s>]+)[^>]*\/?>/i);
   if (atomBare) return safeUrl(atomBare[1]);
-  // RSS 2.0 : <link>https://...</link> avec ou sans CDATA
   const rssM = str.match(/<link[^>]*>(?:<!\[CDATA\[([\s\S]*?)\]\]>|([^<]*))<\/link>/i);
   return rssM ? safeUrl((rssM[1] || rssM[2] || '').trim()) : '';
 }
