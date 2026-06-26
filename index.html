@@ -99,4 +99,362 @@
   .card { background: var(--blanc); border: 1px solid var(--bord); border-left: 3px solid; border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 9px; box-shadow: var(--ombre); transition: box-shadow .15s, transform .12s; }
   .card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.10); transform: translateY(-1px); }
 
-  .cmeta  { display: flex; align-item
+  .cmeta  { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .src    { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .4px; border: 1px solid; }
+  .cdate  { font-size: 11px; color: var(--txt2); margin-left: auto; white-space: nowrap; }
+
+  .ctitle { font-size: 13px; font-weight: 700; line-height: 1.45; color: var(--noir); overflow-wrap: break-word; word-break: break-word; }
+  .csum   { font-size: 12.5px; color: var(--txt); line-height: 1.6; flex: 1; overflow-wrap: break-word; word-break: break-word; }
+  .csum em { color: var(--txt2); font-style: italic; }
+
+  .cfoot  { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid var(--bord); flex-wrap: wrap; }
+  .niveaux { display: flex; gap: 3px; flex-wrap: wrap; }
+  .ntag   { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: var(--fond); color: var(--txt2); border: 1px solid var(--bord); }
+  .clink  { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--bleu); text-decoration: none; white-space: nowrap; }
+  .clink:hover { text-decoration: underline; }
+
+  mark { background: #fef08a; border-radius: 2px; padding: 0 1px; font-style: normal; color: inherit; }
+
+  .no-results { text-align: center; padding: 3rem; color: var(--txt2); font-size: 14px; line-height: 1.8; }
+
+  .err-card { background: #fff3f3; border: 1px solid #f5c0c0; border-radius: var(--r); padding: 14px 18px; font-size: 13px; color: #900; line-height: 1.7; }
+
+  footer { text-align: center; padding: 1.2rem 2rem; font-size: 11px; color: var(--txt2); border-top: 1px solid var(--bord); background: var(--blanc); line-height: 1.9; }
+
+  @media (max-width: 680px) {
+    header, .filtres { padding: 0 1rem; }
+    main, .status-zone { padding: 0 1rem; }
+    .grid { grid-template-columns: 1fr; }
+    .search-wrap { margin-left: 0; width: 100%; }
+    .search-input { width: 100%; }
+    .hbtns .btn-sec span { display: none; }
+  }
+
+  @media print {
+    header, .filtres, .status-zone, .hbtns { display: none !important; }
+    body { background: #fff; font-size: 10.5pt; color: #000; }
+    .stats { border: 1px solid #bbb; break-inside: avoid; }
+    .stat-n { color: #000; }
+    .card { box-shadow: none !important; transform: none !important; border: 1px solid #ccc !important; border-left: 3px solid !important; break-inside: avoid; margin-bottom: 6px; }
+    .section { break-inside: avoid; }
+    .sec-head { border-color: currentColor !important; }
+    .clink::after { content: " → " attr(href); font-size: 8.5pt; color: #555; font-weight: normal; }
+    mark { background: none; text-decoration: underline; }
+    main { margin: 0; padding: 0; }
+    footer { font-size: 9pt; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hinner">
+    <div class="htitle">
+      <h1>📰 Veille informationnelle</h1>
+      <p>ST2S · BTS SP3S · CAPET SMS · Agrég STMS — revue de presse</p>
+    </div>
+    <div class="hbtns">
+      <button class="btn-sec" onclick="window.print()">🖨️ <span>Imprimer</span></button>
+      <button class="btn-sec" id="btnWord" onclick="exportWord()" style="display:none">📄 <span>Exporter Word</span></button>
+      <button class="btn-gen" id="btnGen" onclick="generer()">🔄 Générer la revue</button>
+    </div>
+  </div>
+</header>
+
+<div class="filtres">
+  <div class="finner">
+    <div class="frow">
+      <span class="flabel">Thèmes</span>
+      <div class="dropdown-themes">
+        <button class="dropdown-btn" id="dropdownBtn" onclick="toggleDropdown()">
+          <span id="dropdownLabel">Tous les thèmes (7 sélectionnés)</span>
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="dropdown-panel" id="dropdownPanel">
+          <div class="dropdown-all">
+            <button onclick="selectAll()">Tout sélectionner</button>
+            <button onclick="deselectAll()">Tout désélectionner</button>
+          </div>
+          <div class="dropdown-divider"></div>
+          <label><input type="checkbox" value="sante"  checked onchange="updateLabel()"> 🫀 Santé publique</label>
+          <label><input type="checkbox" value="social" checked onchange="updateLabel()"> 🛡️ Protection sociale</label>
+          <label><input type="checkbox" value="medico" checked onchange="updateLabel()"> 🏥 Médico-social</label>
+          <label><input type="checkbox" value="soins"  checked onchange="updateLabel()"> 💊 Système de soins</label>
+          <label><input type="checkbox" value="stms"   checked onchange="updateLabel()"> 📊 ST2S / STMS</label>
+          <label><input type="checkbox" value="sp3s"   checked onchange="updateLabel()"> 🤝 BTS SP3S</label>
+          <label><input type="checkbox" value="agreg"  checked onchange="updateLabel()"> 🎓 Prépa Agrég / CAPET</label>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un mot-clé…" oninput="onSearch(this.value)" autocomplete="off">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Effacer">✕</button>
+      </div>
+    </div>
+    <div class="frow">
+      <span class="flabel">Niveau</span>
+      <div class="nchips">
+        <button class="nchip active" data-n=""           onclick="setNiveau(this)">Tous</button>
+        <button class="nchip"        data-n="1re ST2S"   onclick="setNiveau(this)">1re ST2S</button>
+        <button class="nchip"        data-n="Tle ST2S"   onclick="setNiveau(this)">Tle ST2S</button>
+        <button class="nchip"        data-n="BTS SP3S"   onclick="setNiveau(this)">BTS SP3S</button>
+        <button class="nchip"        data-n="DECESF"     onclick="setNiveau(this)">DECESF</button>
+        <button class="nchip"        data-n="CAPET SMS"  onclick="setNiveau(this)">CAPET SMS</button>
+        <button class="nchip"        data-n="Agrég STMS" onclick="setNiveau(this)">Agrég STMS</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="status-zone">
+  <div class="sbar" id="sbar">
+    <div class="spin"></div>
+    <span id="stxt">Prête à générer ta revue de presse.</span>
+  </div>
+</div>
+
+<main id="main">
+  <div class="empty">
+    <div class="ico">📰</div>
+    <h2>Ta revue de presse hebdomadaire</h2>
+    <p>Sélectionne tes thèmes et niveaux, puis clique sur <strong>Générer la revue</strong> pour récupérer les dernières publications de tes sources institutionnelles.</p>
+  </div>
+</main>
+
+<footer>
+  <strong>Sources :</strong> HAS · Santé Publique France · ANSM · INSERM · ANSES · France Assos Santé · IRDES · CNSA · Agefiph · Handirect · EHESP · EN3S · INSEE · CREDOC · Centre Obs. Société · Obs. des inégalités · Vie Publique · Légifrance · Service-Public.fr · Min. Travail · Min. Agriculture · Sénat · EPSS · Documentation sociale · Fondation Abbé Pierre · OVE · OFDT · Novethic · France Culture · France Inter · Alternatives Économiques · Sciences et Avenir · Le Monde · Franceinfo
+</footer>
+
+<script>
+const T = {
+  sante:  { label:'Santé publique',      color:'#1a4480', bg:'#e8f0fb', niveaux:['1re ST2S','Tle ST2S'] },
+  social: { label:'Protection sociale',  color:'#1b7a4a', bg:'#e6f4ee', niveaux:['Tle ST2S','BTS SP3S'] },
+  medico: { label:'Médico-social',       color:'#4a3b8c', bg:'#eeecfb', niveaux:['BTS SP3S','DECESF'] },
+  soins:  { label:'Système de soins',    color:'#0e7490', bg:'#e0f2f7', niveaux:['Tle ST2S','BTS SP3S'] },
+  stms:   { label:'ST2S / STMS',         color:'#8c3a1b', bg:'#fbeee9', niveaux:['1re ST2S','CAPET SMS'] },
+  sp3s:   { label:'BTS SP3S',            color:'#7a4f0a', bg:'#fdf3e3', niveaux:['BTS SP3S','DECESF'] },
+  agreg:  { label:'Prépa Agrég / CAPET', color:'#8b1a4a', bg:'#fce8f1', niveaux:['CAPET SMS','Agrég STMS'] },
+};
+
+const API_URL = '/api/rss';
+function safeUrl(u) { return /^https?:\/\//i.test(u || '') ? u : '#'; }
+let articles    = [];
+let niveauFilter = '';
+let searchQuery  = '';
+let searchTimer;
+
+function toggleDropdown() {
+  document.getElementById('dropdownBtn').classList.toggle('open');
+  document.getElementById('dropdownPanel').classList.toggle('open');
+}
+function updateLabel() {
+  const checked = [...document.querySelectorAll('#dropdownPanel input:checked')];
+  const total   = document.querySelectorAll('#dropdownPanel input').length;
+  const label   = document.getElementById('dropdownLabel');
+  if (checked.length === 0)          label.textContent = 'Aucun thème sélectionné';
+  else if (checked.length === total) label.textContent = `Tous les thèmes (${total} sélectionnés)`;
+  else label.textContent = checked.map(cb => cb.closest('label').textContent.trim()).join(', ');
+}
+function selectAll()   { document.querySelectorAll('#dropdownPanel input').forEach(cb => cb.checked = true);  updateLabel(); }
+function deselectAll() { document.querySelectorAll('#dropdownPanel input').forEach(cb => cb.checked = false); updateLabel(); }
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dropdown-themes')) {
+    document.getElementById('dropdownBtn').classList.remove('open');
+    document.getElementById('dropdownPanel').classList.remove('open');
+  }
+});
+
+function setNiveau(btn) {
+  niveauFilter = btn.dataset.n;
+  document.querySelectorAll('.nchip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  if (articles.length) filtrer();
+}
+
+function normalize(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+function onSearch(val) {
+  clearTimeout(searchTimer);
+  document.getElementById('searchClear').style.display = val ? 'flex' : 'none';
+  searchTimer = setTimeout(() => {
+    searchQuery = val.trim();
+    if (articles.length) filtrer();
+  }, 250);
+}
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').style.display = 'none';
+  searchQuery = '';
+  if (articles.length) filtrer();
+}
+function highlight(text, q) {
+  if (!q || !text) return text || '';
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
+function getActifs() {
+  return [...document.querySelectorAll('#dropdownPanel input:checked')].map(cb => cb.value);
+}
+function filtrer() { afficher(getActifs()); }
+
+function setStatus(msg, loading = false) {
+  document.getElementById('stxt').textContent = msg;
+  document.getElementById('sbar').classList.toggle('loading', loading);
+}
+
+async function generer() {
+  const btn = document.getElementById('btnGen');
+  btn.disabled = true;
+  articles = [];
+  const actifs = getActifs();
+  if (!actifs.length) { setStatus('⚠️ Sélectionne au moins un thème.'); btn.disabled = false; return; }
+  setStatus('📡 Récupération des flux RSS en cours…', true);
+  try {
+    const res  = await fetch(`${API_URL}?themes=${actifs.join(',')}`);
+    if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
+    const data = await res.json();
+    articles   = data.articles || [];
+    if (!articles.length) {
+      setStatus('⚠️ Aucun article récupéré. Certaines sources sont peut-être temporairement indisponibles.');
+      document.getElementById('main').innerHTML = `<div class="err-card">Aucun article n'a pu être récupéré. Réessaie dans quelques minutes.</div>`;
+    } else {
+      const now   = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+      const nbSrc = new Set(articles.map(a => a.source)).size;
+      setStatus(`✅ Revue du ${now} — ${articles.length} articles · ${nbSrc} sources.`);
+      document.getElementById('btnWord').style.display = 'flex';
+      afficher(actifs);
+    }
+  } catch (err) {
+    setStatus('❌ Impossible de contacter le serveur.');
+    document.getElementById('main').innerHTML = `<div class="err-card"><strong>Erreur :</strong> ${err.message}<br><br>Vérifie que l'application est bien déployée sur Vercel et que la fonction <code>/api/rss</code> est active.</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function exportWord() {
+  if (!articles.length) return;
+  const actifs  = getActifs();
+  const q       = normalize(searchQuery);
+  const date    = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const filtered = articles.filter(a => {
+    if (!actifs.includes(a.themeId)) return false;
+    if (niveauFilter && !a.niveaux.includes(niveauFilter)) return false;
+    if (q && !normalize(a.titre).includes(q) && !normalize(a.resume||'').includes(q)) return false;
+    return true;
+  });
+  let body = '';
+  for (const id of actifs) {
+    const th   = T[id];
+    if (!th) continue;
+    const arts = filtered.filter(a => a.themeId === id);
+    if (!arts.length) continue;
+    body += `<h2 style="color:${th.color};border-bottom:2px solid ${th.color};padding-bottom:4pt;margin-top:18pt">${th.label}</h2>`;
+    body += `<p style="font-size:9pt;color:#666;margin-bottom:8pt">Niveaux : ${th.niveaux.join(' · ')}</p>`;
+    for (const a of arts) {
+      const d = a.date ? new Date(a.date).toLocaleDateString('fr-FR', {day:'numeric', month:'long', year:'numeric'}) : '';
+      body += `
+        <div style="margin-bottom:12pt;padding:8pt;border-left:3px solid ${th.color};page-break-inside:avoid">
+          <p style="font-size:8pt;color:${th.color};font-weight:bold;margin:0 0 3pt">${a.source.toUpperCase()}${d ? '  ·  ' + d : ''}</p>
+          <p style="font-size:11pt;font-weight:bold;margin:0 0 4pt;color:#1a202c">${a.titre}</p>
+          ${a.resume ? `<p style="font-size:10pt;color:#4a5568;margin:0 0 4pt;line-height:1.5">${a.resume}</p>` : ''}
+          <p style="font-size:8.5pt;margin:0"><a href="${safeUrl(a.url)}" style="color:#1a4480">${safeUrl(a.url) || a.url}</a></p>
+        </div>`;
+    }
+  }
+  const nbSrc = new Set(filtered.map(a => a.source)).size;
+  const html = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+    <head><meta charset="utf-8"><title>Revue de presse — ${date}</title>
+    <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->
+    <style>body{font-family:Calibri,sans-serif;font-size:11pt;color:#1a202c;margin:2cm}h1{font-size:18pt;color:#1a4480;margin-bottom:4pt}h2{font-size:13pt;margin-bottom:2pt}p{margin:0 0 4pt}a{color:#1a4480}</style>
+    </head><body>
+      <h1>📰 Revue de presse — Veille informationnelle</h1>
+      <p style="font-size:10pt;color:#718096;margin-bottom:4pt">${date}</p>
+      <p style="font-size:10pt;color:#718096;margin-bottom:16pt">${filtered.length} articles · ${nbSrc} sources · ${actifs.length} thèmes${niveauFilter ? ' · Niveau : ' + niveauFilter : ''}${searchQuery ? ' · Recherche : « ' + searchQuery + ' »' : ''}</p>
+      ${body}
+      <p style="font-size:8pt;color:#aaa;margin-top:24pt;border-top:1px solid #eee;padding-top:6pt">Généré par Veille informationnelle ST2S · BTS SP3S · CAPET SMS</p>
+    </body></html>`;
+  const blob = new Blob(['\uFEFF', html], { type: 'application/msword' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = `revue-presse-${dateStr}.doc`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }); }
+  catch { return ''; }
+}
+
+function afficher(actifs) {
+  const q = normalize(searchQuery);
+  const filtered = articles.filter(a => {
+    if (!actifs.includes(a.themeId)) return false;
+    if (niveauFilter && !a.niveaux.includes(niveauFilter)) return false;
+    if (q) {
+      if (!normalize(a.titre).includes(q) && !normalize(a.resume).includes(q) && !normalize(a.source).includes(q)) return false;
+    }
+    return true;
+  });
+  const nbSrc = new Set(filtered.map(a => a.source)).size;
+  const now   = new Date();
+  const isFiltered = searchQuery || niveauFilter;
+  let html = `
+    <div class="stats">
+      <div class="stat"><div class="stat-n">${filtered.length}</div><div class="stat-l">Article${filtered.length > 1 ? 's' : ''}${isFiltered ? ' filtrés' : ''}</div></div>
+      <div class="stat"><div class="stat-n">${nbSrc}</div><div class="stat-l">Source${nbSrc > 1 ? 's' : ''}</div></div>
+      <div class="stat"><div class="stat-n">${actifs.length}</div><div class="stat-l">Thème${actifs.length > 1 ? 's' : ''}</div></div>
+      <div style="margin-left:auto;font-size:12px;color:var(--txt2);text-align:right">${now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+    </div>`;
+  if (!filtered.length) {
+    html += `<div class="no-results">🔍 Aucun article ne correspond à ta recherche.<br><small>Essaie d'autres mots-clés ou modifie les filtres.</small></div>`;
+    document.getElementById('main').innerHTML = html;
+    return;
+  }
+  for (const id of actifs) {
+    const th   = T[id];
+    if (!th) continue;
+    const arts = filtered.filter(a => a.themeId === id);
+    if (!arts.length) continue;
+    const niveauxLabels = th.niveaux.map(n =>
+      `<span style="background:${th.bg};color:${th.color};border:1px solid ${th.color}33">${n}</span>`
+    ).join('');
+    const cards = arts.map(a => {
+      const titre  = highlight(a.titre,  searchQuery);
+      const resume = a.resume ? highlight(a.resume, searchQuery) : '';
+      return `
+      <div class="card" style="border-left-color:${th.color}">
+        <div class="cmeta">
+          <span class="src" style="background:${th.bg};color:${th.color};border-color:${th.color}44">${a.source}</span>
+          <span class="cdate">${fmtDate(a.date)}</span>
+        </div>
+        <div class="ctitle">${titre}</div>
+        <div class="csum">${resume || '<em>Résumé non disponible — clique sur l\'article pour le lire.</em>'}</div>
+        <div class="cfoot">
+          <div class="niveaux">${a.niveaux.map(n => `<span class="ntag">${n}</span>`).join('')}</div>
+          <a class="clink" href="${safeUrl(a.url)}" target="_blank" rel="noopener noreferrer">Lire ↗</a>
+        </div>
+      </div>`;
+    }).join('');
+    html += `
+      <div class="section">
+        <div class="sec-head" style="border-color:${th.color}22">
+          <div class="sec-dot" style="background:${th.color}"></div>
+          <h2 style="color:${th.color}">${th.label}</h2>
+          <div class="sec-niv">${niveauxLabels}</div>
+          <span class="sec-cnt">${arts.length} article${arts.length > 1 ? 's' : ''}</span>
+        </div>
+        <div class="grid">${cards}</div>
+      </div>`;
+  }
+  document.getElementById('main').innerHTML = html;
+}
+</script>
+</body>
+</html>
