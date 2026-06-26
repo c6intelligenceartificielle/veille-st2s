@@ -74,6 +74,7 @@ const NIVEAUX = {
   agreg:  ['CAPET SMS', 'Agrég STMS'],
 };
 
+// ─── Parsing XML RSS/Atom minimal ─────────────────────────────────────────
 function parseXML(xml) {
   const items = [];
   const blocRegex = /<(item|entry)[^>]*>([\s\S]*?)<\/\1>/gi;
@@ -111,25 +112,48 @@ function stripTags(str) {
 function cleanDesc(str) {
   if (!str) return '';
   return str
-    .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#039;/g, "'")
-    .replace(/&rsquo;/g, "'").replace(/&laquo;/g, '«').replace(/&raquo;/g, '»')
-    .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 320);
+    // 1. Décoder les entités HTML EN PREMIER
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&rsquo;/g, "'")
+    .replace(/&laquo;/g, '«')
+    .replace(/&raquo;/g, '»')
+    // 2. Supprimer TOUTES les balises HTML ensuite
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 320);
 }
 
 function decodeHTMLEntities(str) {
   return str
-    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&rsquo;/g, "'")
-    .replace(/&laquo;/g, '«').replace(/&raquo;/g, '»').replace(/&eacute;/g, 'é')
-    .replace(/&egrave;/g, 'è').replace(/&agrave;/g, 'à').replace(/&ccedil;/g, 'ç')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&rsquo;/g, "'")
+    .replace(/&laquo;/g, '«')
+    .replace(/&raquo;/g, '»')
+    .replace(/&eacute;/g, 'é')
+    .replace(/&egrave;/g, 'è')
+    .replace(/&agrave;/g, 'à')
+    .replace(/&ccedil;/g, 'ç')
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)));
 }
 
 function parseDate(str) {
   if (!str) return new Date().toISOString();
-  try { const d = new Date(str); return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString(); }
-  catch { return new Date().toISOString(); }
+  try {
+    const d = new Date(str);
+    return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+  } catch {
+    return new Date().toISOString();
+  }
 }
 
 async function fetchFlux({ url, src }, themeId) {
@@ -144,10 +168,17 @@ async function fetchFlux({ url, src }, themeId) {
     if (!res.ok) return [];
     const xml = await res.text();
     return parseXML(xml).map(item => ({
-      themeId, titre: item.titre, source: src, url: item.lien,
-      resume: item.desc || '', date: parseDate(item.date), niveaux: NIVEAUX[themeId],
+      themeId,
+      titre:   item.titre,
+      source:  src,
+      url:     item.lien,
+      resume:  item.desc || '',
+      date:    parseDate(item.date),
+      niveaux: NIVEAUX[themeId],
     }));
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export default async function handler(req, res) {
@@ -157,10 +188,15 @@ export default async function handler(req, res) {
 
   const themesParam = req.query.themes || 'sante,social,medico,soins,stms,sp3s,agreg';
   const themes = themesParam.split(',').filter(t => FLUX[t]);
-  if (!themes.length) { res.status(400).json({ error: 'Aucun thème valide fourni.' }); return; }
+
+  if (!themes.length) {
+    res.status(400).json({ error: 'Aucun thème valide fourni.' });
+    return;
+  }
 
   const jobs = themes.flatMap(id => FLUX[id].map(f => fetchFlux(f, id)));
   const results = await Promise.allSettled(jobs);
+
   let articles = [];
   results.forEach(r => { if (r.status === 'fulfilled') articles.push(...r.value); });
 
@@ -173,5 +209,10 @@ export default async function handler(req, res) {
   });
 
   articles.sort((a, b) => new Date(b.date) - new Date(a.date));
-  res.status(200).json({ generatedAt: new Date().toISOString(), count: articles.length, articles });
+
+  res.status(200).json({
+    generatedAt: new Date().toISOString(),
+    count: articles.length,
+    articles,
+  });
 }
