@@ -85,8 +85,7 @@ function stripTags(str) {
 function cleanDesc(str) {
   if (!str) return '';
   return str
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
+    // 1. Décoder les entités HTML EN PREMIER
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
@@ -96,6 +95,12 @@ function cleanDesc(str) {
     .replace(/&rsquo;/g, "'")
     .replace(/&laquo;/g, '«')
     .replace(/&raquo;/g, '»')
+    // 2. Supprimer TOUTES les balises HTML ensuite
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 320);
+}
     .trim()
     .slice(0, 320);
 }
