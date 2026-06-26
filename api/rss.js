@@ -47,7 +47,6 @@ const NIVEAUX = {
   travail:   ['BTS SP3S', 'DECESF'],
 };
 
-// ─── Parsing XML RSS/Atom minimal ─────────────────────────────────────────
 function parseXML(xml) {
   const items = [];
   const blocRegex = /<(item|entry)[^>]*>([\s\S]*?)<\/\1>/gi;
@@ -85,7 +84,6 @@ function stripTags(str) {
 function cleanDesc(str) {
   if (!str) return '';
   return str
-    // 1. Décoder les entités HTML EN PREMIER
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
@@ -93,14 +91,10 @@ function cleanDesc(str) {
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
     .replace(/&rsquo;/g, "'")
-    .replace(/&laquo;/g, '«')
-    .replace(/&raquo;/g, '»')
-    // 2. Supprimer TOUTES les balises HTML ensuite
+    .replace(/&laquo;/g, '\u00ab')
+    .replace(/&raquo;/g, '\u00bb')
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 320);
-}
     .trim()
     .slice(0, 320);
 }
@@ -113,12 +107,12 @@ function decodeHTMLEntities(str) {
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
     .replace(/&rsquo;/g, "'")
-    .replace(/&laquo;/g, '«')
-    .replace(/&raquo;/g, '»')
-    .replace(/&eacute;/g, 'é')
-    .replace(/&egrave;/g, 'è')
-    .replace(/&agrave;/g, 'à')
-    .replace(/&ccedil;/g, 'ç')
+    .replace(/&laquo;/g, '\u00ab')
+    .replace(/&raquo;/g, '\u00bb')
+    .replace(/&eacute;/g, '\u00e9')
+    .replace(/&egrave;/g, '\u00e8')
+    .replace(/&agrave;/g, '\u00e0')
+    .replace(/&ccedil;/g, '\u00e7')
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)));
 }
 
