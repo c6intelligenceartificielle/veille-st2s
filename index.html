@@ -9,6 +9,7 @@
     --bleu:   #1a4480; --bleu-c: #e8f0fb;
     --vert:   #1b7a4a; --vert-c: #e6f4ee;
     --violet: #4a3b8c; --viol-c: #eeecfb;
+    --cyan:   #0e7490; --cyan-c: #e0f2f7;
     --terre:  #8c3a1b; --terr-c: #fbeee9;
     --ambre:  #7a4f0a; --ambr-c: #fdf3e3;
     --fond: #f5f6f8; --bord: #dde1e9;
@@ -42,12 +43,12 @@
 
   /* ── DROPDOWN THÈMES ── */
   .dropdown-themes { position: relative; }
-  .dropdown-btn { display: flex; align-items: center; gap: 8px; background: var(--blanc); color: var(--txt); border: 1px solid var(--bord); border-radius: var(--rs); padding: 7px 14px; font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color .15s, box-shadow .15s; min-width: 220px; justify-content: space-between; }
+  .dropdown-btn { display: flex; align-items: center; gap: 8px; background: var(--blanc); color: var(--txt); border: 1px solid var(--bord); border-radius: var(--rs); padding: 7px 14px; font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color .15s, box-shadow .15s; min-width: 240px; justify-content: space-between; }
   .dropdown-btn:hover { border-color: var(--bleu); }
   .dropdown-btn.open { border-color: var(--bleu); box-shadow: 0 0 0 2px rgba(26,68,128,.12); }
   .dropdown-arrow { font-size: 10px; transition: transform .15s; color: var(--txt2); }
   .dropdown-btn.open .dropdown-arrow { transform: rotate(180deg); }
-  .dropdown-panel { display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 240px; background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); box-shadow: 0 4px 16px rgba(0,0,0,.10); z-index: 200; padding: 6px 0; }
+  .dropdown-panel { display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 260px; background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); box-shadow: 0 4px 16px rgba(0,0,0,.10); z-index: 200; padding: 6px 0; }
   .dropdown-panel.open { display: block; }
   .dropdown-panel label { display: flex; align-items: center; gap: 10px; padding: 8px 16px; font-size: 13px; cursor: pointer; color: var(--txt); transition: background .1s; }
   .dropdown-panel label:hover { background: var(--fond); }
@@ -66,29 +67,24 @@
   /* ── MAIN ── */
   main { max-width: 1100px; margin: 1.5rem auto 4rem; padding: 0 2rem; }
 
-  /* état vide */
   .empty { text-align: center; padding: 5rem 2rem; color: var(--txt2); }
   .empty .ico { font-size: 52px; opacity: .2; margin-bottom: 1rem; }
   .empty h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--txt); }
   .empty p  { font-size: 14px; max-width: 400px; margin: 0 auto; line-height: 1.7; }
 
-  /* stats */
   .stats { background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); padding: 12px 20px; display: flex; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
   .stat { text-align: center; }
   .stat-n { font-size: 22px; font-weight: 700; color: var(--bleu); }
   .stat-l { font-size: 11px; color: var(--txt2); text-transform: uppercase; letter-spacing: .4px; }
 
-  /* sections */
   .section { margin-bottom: 2.5rem; }
   .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .sec-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   .sec-head h2 { font-size: 15px; font-weight: 700; }
   .sec-cnt { font-size: 12px; color: var(--txt2); margin-left: auto; }
 
-  /* grille articles */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
 
-  /* carte */
   .card { background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--ombre); transition: box-shadow .15s; }
   .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,.10); }
 
@@ -143,7 +139,7 @@
     <span class="flabel">Thèmes</span>
     <div class="dropdown-themes">
       <button class="dropdown-btn" id="dropdownBtn" onclick="toggleDropdown()">
-        <span id="dropdownLabel">Tous les thèmes (5 sélectionnés)</span>
+        <span id="dropdownLabel">Tous les thèmes (6 sélectionnés)</span>
         <span class="dropdown-arrow">▼</span>
       </button>
       <div class="dropdown-panel" id="dropdownPanel">
@@ -154,9 +150,10 @@
         <div class="dropdown-divider"></div>
         <label><input type="checkbox" value="sante" checked onchange="updateLabel()"> 🫀 Santé publique</label>
         <label><input type="checkbox" value="social" checked onchange="updateLabel()"> 🛡️ Protection sociale</label>
-        <label><input type="checkbox" value="politiques" checked onchange="updateLabel()"> 🏛️ Politiques publiques</label>
-        <label><input type="checkbox" value="societe" checked onchange="updateLabel()"> 👥 Société & inégalités</label>
-        <label><input type="checkbox" value="travail" checked onchange="updateLabel()"> 🤝 Travail social</label>
+        <label><input type="checkbox" value="medico" checked onchange="updateLabel()"> 🏥 Médico-social</label>
+        <label><input type="checkbox" value="soins" checked onchange="updateLabel()"> 💊 Système de soins</label>
+        <label><input type="checkbox" value="stms" checked onchange="updateLabel()"> 📊 ST2S / STMS</label>
+        <label><input type="checkbox" value="sp3s" checked onchange="updateLabel()"> 🤝 BTS SP3S</label>
       </div>
     </div>
   </div>
@@ -178,54 +175,40 @@
 </main>
 
 <footer>
-  Sources : HAS · Santé Publique France · ANSM · INSEE · Vie Publique · Légifrance · Assurance Maladie · Min. Travail · ASH · OVE · Sénat · Assemblée nationale · France Culture · Le Monde · Libération · La Croix · Franceinfo
+  Sources : HAS · Santé Publique France · ANSM · INSERM · IRDES · CNSA · Agefiph · INSEE · Vie Publique · Légifrance · Service-Public.fr · Min. Travail · Sénat · EPSS · Documentation sociale · Fondation Abbé Pierre · OVE · France Culture · Alternatives Économiques · Sciences et Avenir · Le Monde · Franceinfo · La Croix
 </footer>
 
 <script>
-// ── CONFIG THÈMES ──────────────────────────────────────────────────────────
 const T = {
-  sante:      { label:'Santé publique',      color:'#1a4480', bg:'#e8f0fb', niveaux:['1re ST2S','Tle ST2S'] },
-  social:     { label:'Protection sociale',  color:'#1b7a4a', bg:'#e6f4ee', niveaux:['Tle ST2S','BTS SP3S'] },
-  politiques: { label:'Politiques publiques',color:'#4a3b8c', bg:'#eeecfb', niveaux:['BTS SP3S','CAPET SMS'] },
-  societe:    { label:'Société & inégalités',color:'#8c3a1b', bg:'#fbeee9', niveaux:['1re ST2S','CAPET SMS'] },
-  travail:    { label:'Travail social',      color:'#7a4f0a', bg:'#fdf3e3', niveaux:['BTS SP3S','DECESF'] },
+  sante:  { label:'Santé publique',    color:'#1a4480', bg:'#e8f0fb', niveaux:['1re ST2S','Tle ST2S'] },
+  social: { label:'Protection sociale',color:'#1b7a4a', bg:'#e6f4ee', niveaux:['Tle ST2S','BTS SP3S'] },
+  medico: { label:'Médico-social',     color:'#4a3b8c', bg:'#eeecfb', niveaux:['BTS SP3S','DECESF'] },
+  soins:  { label:'Système de soins',  color:'#0e7490', bg:'#e0f2f7', niveaux:['Tle ST2S','BTS SP3S'] },
+  stms:   { label:'ST2S / STMS',       color:'#8c3a1b', bg:'#fbeee9', niveaux:['1re ST2S','CAPET SMS'] },
+  sp3s:   { label:'BTS SP3S',          color:'#7a4f0a', bg:'#fdf3e3', niveaux:['BTS SP3S','DECESF'] },
 };
 
-// ── URL de ta fonction Vercel ──────────────────────────────────────────────
-// En développement local, utilise http://localhost:3000/api/rss
-// En production, c'est automatiquement /api/rss (même domaine)
 const API_URL = '/api/rss';
-
 let articles = [];
 
 // ── DROPDOWN ───────────────────────────────────────────────────────────────
 function toggleDropdown() {
-  const btn = document.getElementById('dropdownBtn');
-  const panel = document.getElementById('dropdownPanel');
-  btn.classList.toggle('open');
-  panel.classList.toggle('open');
+  document.getElementById('dropdownBtn').classList.toggle('open');
+  document.getElementById('dropdownPanel').classList.toggle('open');
 }
 
 function updateLabel() {
   const checked = [...document.querySelectorAll('#dropdownPanel input:checked')];
-  const total = document.querySelectorAll('#dropdownPanel input').length;
-  const label = document.getElementById('dropdownLabel');
-  if (checked.length === 0) label.textContent = 'Aucun thème sélectionné';
+  const total   = document.querySelectorAll('#dropdownPanel input').length;
+  const label   = document.getElementById('dropdownLabel');
+  if (checked.length === 0)     label.textContent = 'Aucun thème sélectionné';
   else if (checked.length === total) label.textContent = `Tous les thèmes (${total} sélectionnés)`;
   else label.textContent = checked.map(cb => cb.closest('label').textContent.trim()).join(', ');
 }
 
-function selectAll() {
-  document.querySelectorAll('#dropdownPanel input').forEach(cb => cb.checked = true);
-  updateLabel();
-}
+function selectAll()   { document.querySelectorAll('#dropdownPanel input').forEach(cb => cb.checked = true);  updateLabel(); }
+function deselectAll() { document.querySelectorAll('#dropdownPanel input').forEach(cb => cb.checked = false); updateLabel(); }
 
-function deselectAll() {
-  document.querySelectorAll('#dropdownPanel input').forEach(cb => cb.checked = false);
-  updateLabel();
-}
-
-// Fermer le dropdown si clic ailleurs
 document.addEventListener('click', e => {
   if (!e.target.closest('.dropdown-themes')) {
     document.getElementById('dropdownBtn').classList.remove('open');
@@ -254,27 +237,22 @@ async function generer() {
   setStatus('📡 Récupération des flux RSS en cours…', true);
 
   try {
-    const url = `${API_URL}?themes=${actifs.join(',')}`;
-    const res = await fetch(url);
-
+    const res  = await fetch(`${API_URL}?themes=${actifs.join(',')}`);
     if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
-
     const data = await res.json();
-    articles = data.articles || [];
+    articles   = data.articles || [];
 
-    if (articles.length === 0) {
-      setStatus('⚠️ Aucun article récupéré. Certains flux RSS sont peut-être temporairement indisponibles.');
+    if (!articles.length) {
+      setStatus('⚠️ Aucun article récupéré. Certaines sources sont peut-être temporairement indisponibles.');
       document.getElementById('main').innerHTML = `<div class="err-card">
-        Aucun article n'a pu être récupéré cette fois-ci. Les sources institutionnelles peuvent être temporairement hors ligne.
-        <br><br>Réessaie dans quelques minutes — les flux sont généralement disponibles en semaine.
+        Aucun article n'a pu être récupéré. Réessaie dans quelques minutes.
       </div>`;
     } else {
-      const now = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+      const now   = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
       const nbSrc = new Set(articles.map(a => a.source)).size;
       setStatus(`✅ Revue du ${now} — ${articles.length} articles · ${nbSrc} sources.`);
       afficher(actifs);
     }
-
   } catch (err) {
     setStatus('❌ Impossible de contacter le serveur.');
     document.getElementById('main').innerHTML = `<div class="err-card">
@@ -289,9 +267,8 @@ async function generer() {
 // ── RENDU ───────────────────────────────────────────────────────────────────
 function fmtDate(iso) {
   if (!iso) return '';
-  try {
-    return new Date(iso).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
-  } catch { return ''; }
+  try { return new Date(iso).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }); }
+  catch { return ''; }
 }
 
 function afficher(actifs) {
@@ -307,7 +284,7 @@ function afficher(actifs) {
     </div>`;
 
   for (const id of actifs) {
-    const th = T[id];
+    const th   = T[id];
     const arts = articles.filter(a => a.themeId === id);
     if (!arts.length) continue;
 
@@ -318,11 +295,7 @@ function afficher(actifs) {
           <span class="cdate">${fmtDate(a.date)}</span>
         </div>
         <div class="ctitle">${a.titre}</div>
-        <div class="csum">${
-          a.resume
-            ? a.resume
-            : '<em>Résumé non disponible — clique sur l\'article pour le lire.</em>'
-        }</div>
+        <div class="csum">${a.resume ? a.resume : '<em>Résumé non disponible — clique sur l\'article pour le lire.</em>'}</div>
         <div class="cfoot">
           <div class="niveaux">${a.niveaux.map(n=>`<span class="ntag">${n}</span>`).join('')}</div>
           <a class="clink" href="${a.url}" target="_blank" rel="noopener noreferrer">Lire l'article ↗</a>
