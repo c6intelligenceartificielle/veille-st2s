@@ -115,8 +115,11 @@
 
   mark { background: #fef08a; border-radius: 2px; padding: 0 1px; font-style: normal; color: inherit; }
 
-  .no-results { text-align: center; padding: 3rem; color: var(--txt2); font-size: 14px; line-height: 1.8; }
+  .badge-recent { font-size: 9px; font-weight: 700; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; border-radius: 999px; padding: 1px 7px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+  .src-cnt { font-size: 10px; font-weight: 400; opacity: .55; margin-left: 2px; }
+  .schips  { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
 
+  .no-results { text-align: center; padding: 3rem; color: var(--txt2); font-size: 14px; line-height: 1.8; }
   .err-card { background: #fff3f3; border: 1px solid #f5c0c0; border-radius: var(--r); padding: 14px 18px; font-size: 13px; color: #900; line-height: 1.7; }
 
   footer { text-align: center; padding: 1.2rem 2rem; font-size: 11px; color: var(--txt2); border-top: 1px solid var(--bord); background: var(--blanc); line-height: 1.9; }
@@ -163,6 +166,7 @@
 
 <div class="filtres">
   <div class="finner">
+
     <div class="frow">
       <span class="flabel">Thèmes</span>
       <div class="dropdown-themes">
@@ -191,9 +195,10 @@
         <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Effacer">✕</button>
       </div>
     </div>
+
     <div class="frow">
       <span class="flabel">Niveau</span>
-      <div class="nchips">
+      <div class="nchips" id="niveauChips">
         <button class="nchip active" data-n=""           onclick="setNiveau(this)">Tous</button>
         <button class="nchip"        data-n="1re ST2S"   onclick="setNiveau(this)">1re ST2S</button>
         <button class="nchip"        data-n="Tle ST2S"   onclick="setNiveau(this)">Tle ST2S</button>
@@ -203,6 +208,12 @@
         <button class="nchip"        data-n="Agrég STMS" onclick="setNiveau(this)">Agrég STMS</button>
       </div>
     </div>
+
+    <div class="frow" id="sourceRow" style="display:none">
+      <span class="flabel">Sources</span>
+      <div class="schips" id="sourceChips"></div>
+    </div>
+
   </div>
 </div>
 
@@ -222,7 +233,7 @@
 </main>
 
 <footer>
-  <strong>Sources :</strong> HAS · Santé Publique France · ANSM · INSERM · ANSES · France Assos Santé · IRDES · CNSA · Agefiph · Handirect · EHESP · EN3S · INSEE · CREDOC · Centre Obs. Société · Obs. des inégalités · Vie Publique · Légifrance · Service-Public.fr · Min. Travail · Min. Agriculture · Sénat · EPSS · Documentation sociale · Fondation Abbé Pierre · OVE · OFDT · Novethic · France Culture · France Inter · Alternatives Économiques · Sciences et Avenir · Le Monde · Franceinfo
+  <strong>Sources :</strong> HAS · Santé Publique France · ANSM · INSERM · ANSES · France Assos Santé · IRDES · CNSA · Agefiph · Handirect · EHESP · EN3S · INSEE · CREDOC · Centre Obs. Société · Obs. des inégalités · Vie Publique · Légifrance · Service-Public.fr · Min. Travail · Min. Agriculture · Sénat · EPSS · Documentation sociale · Fondation Abbé Pierre · OVE · OFDT · Novethic · France Culture · France Inter · Alternatives Économiques · The Conversation · Le Monde · Franceinfo
 </footer>
 
 <script>
@@ -238,10 +249,11 @@ const T = {
 
 const API_URL = '/api/rss';
 function safeUrl(u) { return /^https?:\/\//i.test(u || '') ? u : '#'; }
-let articles    = [];
-let niveauFilter = '';
-let searchQuery  = '';
+let articles        = [];
+let niveauFilter    = '';
+let searchQuery     = '';
 let searchTimer;
+let selectedSources = null;
 
 function toggleDropdown() {
   document.getElementById('dropdownBtn').classList.toggle('open');
@@ -266,9 +278,55 @@ document.addEventListener('click', e => {
 
 function setNiveau(btn) {
   niveauFilter = btn.dataset.n;
-  document.querySelectorAll('.nchip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#niveauChips .nchip').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
   if (articles.length) filtrer();
+}
+
+function buildSourceChips() {
+  const sources = [...new Set(articles.map(a => a.source))].sort((a, b) => a.localeCompare(b, 'fr'));
+  selectedSources = null;
+  const container = document.getElementById('sourceChips');
+  let html = `<button class="nchip active" id="srcAll" onclick="resetSources()">Toutes</button>`;
+  for (const src of sources) {
+    const n = articles.filter(a => a.source === src).length;
+    const key = encodeURIComponent(src);
+    html += `<button class="nchip active" data-src="${key}" onclick="toggleSource(this)">${src}<span class="src-cnt">${n}</span></button>`;
+  }
+  container.innerHTML = html;
+  document.getElementById('sourceRow').style.display = 'flex';
+}
+
+function toggleSource(btn) {
+  const src = decodeURIComponent(btn.dataset.src);
+  const allSrcs = [...new Set(articles.map(a => a.source))];
+  if (selectedSources === null) {
+    selectedSources = new Set(allSrcs);
+    selectedSources.delete(src);
+    btn.classList.remove('active');
+    document.getElementById('srcAll').classList.remove('active');
+  } else if (selectedSources.has(src)) {
+    selectedSources.delete(src);
+    btn.classList.remove('active');
+  } else {
+    selectedSources.add(src);
+    btn.classList.add('active');
+    if (selectedSources.size === allSrcs.length) {
+      selectedSources = null;
+      document.getElementById('srcAll').classList.add('active');
+    }
+  }
+  filtrer();
+}
+
+function resetSources() {
+  selectedSources = null;
+  document.querySelectorAll('#sourceChips .nchip').forEach(c => c.classList.add('active'));
+  filtrer();
+}
+
+function isRecent(dateIso) {
+  return dateIso && (Date.now() - new Date(dateIso).getTime()) < 48 * 3600 * 1000;
 }
 
 function normalize(s) {
@@ -310,6 +368,8 @@ async function generer() {
   articles = [];
   const actifs = getActifs();
   if (!actifs.length) { setStatus('⚠️ Sélectionne au moins un thème.'); btn.disabled = false; return; }
+  document.getElementById('sourceRow').style.display = 'none';
+  selectedSources = null;
   setStatus('📡 Récupération des flux RSS en cours…', true);
   try {
     const res  = await fetch(`${API_URL}?themes=${actifs.join(',')}`);
@@ -324,6 +384,7 @@ async function generer() {
       const nbSrc = new Set(articles.map(a => a.source)).size;
       setStatus(`✅ Revue du ${now} — ${articles.length} articles · ${nbSrc} sources.`);
       document.getElementById('btnWord').style.display = 'flex';
+      buildSourceChips();
       afficher(actifs);
     }
   } catch (err) {
@@ -343,41 +404,38 @@ function exportWord() {
   const filtered = articles.filter(a => {
     if (!actifs.includes(a.themeId)) return false;
     if (niveauFilter && !a.niveaux.includes(niveauFilter)) return false;
+    if (selectedSources !== null && !selectedSources.has(a.source)) return false;
     if (q && !normalize(a.titre).includes(q) && !normalize(a.resume||'').includes(q)) return false;
     return true;
   });
   let body = '';
   for (const id of actifs) {
-    const th   = T[id];
-    if (!th) continue;
-    const arts = filtered.filter(a => a.themeId === id);
-    if (!arts.length) continue;
+    const th = T[id]; if (!th) continue;
+    const arts = filtered.filter(a => a.themeId === id); if (!arts.length) continue;
     body += `<h2 style="color:${th.color};border-bottom:2px solid ${th.color};padding-bottom:4pt;margin-top:18pt">${th.label}</h2>`;
     body += `<p style="font-size:9pt;color:#666;margin-bottom:8pt">Niveaux : ${th.niveaux.join(' · ')}</p>`;
     for (const a of arts) {
       const d = a.date ? new Date(a.date).toLocaleDateString('fr-FR', {day:'numeric', month:'long', year:'numeric'}) : '';
-      body += `
-        <div style="margin-bottom:12pt;padding:8pt;border-left:3px solid ${th.color};page-break-inside:avoid">
-          <p style="font-size:8pt;color:${th.color};font-weight:bold;margin:0 0 3pt">${a.source.toUpperCase()}${d ? '  ·  ' + d : ''}</p>
-          <p style="font-size:11pt;font-weight:bold;margin:0 0 4pt;color:#1a202c">${a.titre}</p>
-          ${a.resume ? `<p style="font-size:10pt;color:#4a5568;margin:0 0 4pt;line-height:1.5">${a.resume}</p>` : ''}
-          <p style="font-size:8.5pt;margin:0"><a href="${safeUrl(a.url)}" style="color:#1a4480">${safeUrl(a.url) || a.url}</a></p>
-        </div>`;
+      body += `<div style="margin-bottom:12pt;padding:8pt;border-left:3px solid ${th.color};page-break-inside:avoid">
+        <p style="font-size:8pt;color:${th.color};font-weight:bold;margin:0 0 3pt">${a.source.toUpperCase()}${d ? '  ·  ' + d : ''}</p>
+        <p style="font-size:11pt;font-weight:bold;margin:0 0 4pt;color:#1a202c">${a.titre}</p>
+        ${a.resume ? `<p style="font-size:10pt;color:#4a5568;margin:0 0 4pt;line-height:1.5">${a.resume}</p>` : ''}
+        <p style="font-size:8.5pt;margin:0"><a href="${safeUrl(a.url)}" style="color:#1a4480">${safeUrl(a.url) || a.url}</a></p>
+      </div>`;
     }
   }
   const nbSrc = new Set(filtered.map(a => a.source)).size;
-  const html = `
-    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
-    <head><meta charset="utf-8"><title>Revue de presse — ${date}</title>
-    <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->
-    <style>body{font-family:Calibri,sans-serif;font-size:11pt;color:#1a202c;margin:2cm}h1{font-size:18pt;color:#1a4480;margin-bottom:4pt}h2{font-size:13pt;margin-bottom:2pt}p{margin:0 0 4pt}a{color:#1a4480}</style>
-    </head><body>
-      <h1>📰 Revue de presse — Veille informationnelle</h1>
-      <p style="font-size:10pt;color:#718096;margin-bottom:4pt">${date}</p>
-      <p style="font-size:10pt;color:#718096;margin-bottom:16pt">${filtered.length} articles · ${nbSrc} sources · ${actifs.length} thèmes${niveauFilter ? ' · Niveau : ' + niveauFilter : ''}${searchQuery ? ' · Recherche : « ' + searchQuery + ' »' : ''}</p>
-      ${body}
-      <p style="font-size:8pt;color:#aaa;margin-top:24pt;border-top:1px solid #eee;padding-top:6pt">Généré par Veille informationnelle ST2S · BTS SP3S · CAPET SMS</p>
-    </body></html>`;
+  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+  <head><meta charset="utf-8"><title>Revue de presse — ${date}</title>
+  <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->
+  <style>body{font-family:Calibri,sans-serif;font-size:11pt;color:#1a202c;margin:2cm}h1{font-size:18pt;color:#1a4480;margin-bottom:4pt}h2{font-size:13pt;margin-bottom:2pt}p{margin:0 0 4pt}a{color:#1a4480}</style>
+  </head><body>
+    <h1>📰 Revue de presse — Veille informationnelle</h1>
+    <p style="font-size:10pt;color:#718096;margin-bottom:4pt">${date}</p>
+    <p style="font-size:10pt;color:#718096;margin-bottom:16pt">${filtered.length} articles · ${nbSrc} sources · ${actifs.length} thèmes${niveauFilter ? ' · Niveau : ' + niveauFilter : ''}${searchQuery ? ' · Recherche : « ' + searchQuery + ' »' : ''}</p>
+    ${body}
+    <p style="font-size:8pt;color:#aaa;margin-top:24pt;border-top:1px solid #eee;padding-top:6pt">Généré par Veille informationnelle ST2S · BTS SP3S · CAPET SMS</p>
+  </body></html>`;
   const blob = new Blob(['\uFEFF', html], { type: 'application/msword' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
@@ -397,6 +455,7 @@ function afficher(actifs) {
   const filtered = articles.filter(a => {
     if (!actifs.includes(a.themeId)) return false;
     if (niveauFilter && !a.niveaux.includes(niveauFilter)) return false;
+    if (selectedSources !== null && !selectedSources.has(a.source)) return false;
     if (q) {
       if (!normalize(a.titre).includes(q) && !normalize(a.resume).includes(q) && !normalize(a.source).includes(q)) return false;
     }
@@ -404,7 +463,7 @@ function afficher(actifs) {
   });
   const nbSrc = new Set(filtered.map(a => a.source)).size;
   const now   = new Date();
-  const isFiltered = searchQuery || niveauFilter;
+  const isFiltered = searchQuery || niveauFilter || selectedSources !== null;
   let html = `
     <div class="stats">
       <div class="stat"><div class="stat-n">${filtered.length}</div><div class="stat-l">Article${filtered.length > 1 ? 's' : ''}${isFiltered ? ' filtrés' : ''}</div></div>
@@ -418,20 +477,20 @@ function afficher(actifs) {
     return;
   }
   for (const id of actifs) {
-    const th   = T[id];
-    if (!th) continue;
-    const arts = filtered.filter(a => a.themeId === id);
-    if (!arts.length) continue;
+    const th = T[id]; if (!th) continue;
+    const arts = filtered.filter(a => a.themeId === id); if (!arts.length) continue;
     const niveauxLabels = th.niveaux.map(n =>
       `<span style="background:${th.bg};color:${th.color};border:1px solid ${th.color}33">${n}</span>`
     ).join('');
     const cards = arts.map(a => {
-      const titre  = highlight(a.titre,  searchQuery);
+      const titre  = highlight(a.titre, searchQuery);
       const resume = a.resume ? highlight(a.resume, searchQuery) : '';
+      const recent = isRecent(a.date) ? `<span class="badge-recent">Récent</span>` : '';
       return `
       <div class="card" style="border-left-color:${th.color}">
         <div class="cmeta">
           <span class="src" style="background:${th.bg};color:${th.color};border-color:${th.color}44">${a.source}</span>
+          ${recent}
           <span class="cdate">${fmtDate(a.date)}</span>
         </div>
         <div class="ctitle">${titre}</div>
