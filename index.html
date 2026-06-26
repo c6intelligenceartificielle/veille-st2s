@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veille informationnelle — ST2S · BTS SP3S · CAPET SMS</title>
+<style>
+  :root {
+    --bleu:   #1a4480; --bleu-c: #e8f0fb;
+    --vert:   #1b7a4a; --vert-c: #e6f4ee;
+    --violet: #4a3b8c; --viol-c: #eeecfb;
+    --terre:  #8c3a1b; --terr-c: #fbeee9;
+    --ambre:  #7a4f0a; --ambr-c: #fdf3e3;
+    --fond: #f5f6f8; --bord: #dde1e9;
+    --txt: #4a5568; --txt2: #718096;
+    --blanc: #fff; --noir: #1a202c;
+    --r: 10px; --rs: 6px;
+    --ombre: 0 1px 4px rgba(0,0,0,.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--fond); color: var(--noir); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+  /* ── HEADER ── */
+  header { background: var(--blanc); border-bottom: 1px solid var(--bord); padding: 0 2rem; position: sticky; top: 0; z-index: 100; box-shadow: var(--ombre); }
+  .hinner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; flex-wrap: wrap; }
+  .htitle h1 { font-size: 18px; font-weight: 700; color: var(--bleu); letter-spacing: -.3px; }
+  .htitle p  { font-size: 12px; color: var(--txt2); margin-top: 1px; }
+  .hbtns { display: flex; align-items: center; gap: 10px; }
+
+  .btn-gen { display: flex; align-items: center; gap: 8px; background: var(--bleu); color: #fff; border: none; border-radius: var(--rs); padding: 9px 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s, transform .1s; }
+  .btn-gen:hover { background: #153a6e; }
+  .btn-gen:active { transform: scale(.98); }
+  .btn-gen:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+  .btn-sec { display: flex; align-items: center; gap: 6px; background: var(--blanc); color: var(--txt); border: 1px solid var(--bord); border-radius: var(--rs); padding: 9px 14px; font-size: 13px; cursor: pointer; transition: background .15s; }
+  .btn-sec:hover { background: var(--fond); }
+
+  /* ── FILTRES ── */
+  .filtres { background: var(--blanc); border-bottom: 1px solid var(--bord); padding: 0 2rem; }
+  .finner { max-width: 1100px; margin: 0 auto; padding: 10px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .flabel { font-size: 12px; font-weight: 600; color: var(--txt2); text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+  .themes { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tbtn { font-size: 12px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--bord); background: var(--blanc); color: var(--txt); cursor: pointer; transition: all .15s; font-weight: 500; }
+  .tbtn.on { border-color: transparent; font-weight: 600; }
+  .tbtn[data-id="sante"].on    { background: var(--bleu-c);  color: var(--bleu);   }
+  .tbtn[data-id="social"].on   { background: var(--vert-c);  color: var(--vert);   }
+  .tbtn[data-id="politiques"].on{ background: var(--viol-c); color: var(--violet); }
+  .tbtn[data-id="societe"].on  { background: var(--terr-c);  color: var(--terre);  }
+  .tbtn[data-id="travail"].on  { background: var(--ambr-c);  color: var(--ambre);  }
+
+  /* ── STATUS ── */
+  .status-zone { max-width: 1100px; margin: 1rem auto 0; padding: 0 2rem; }
+  .sbar { font-size: 13px; color: var(--txt2); display: flex; align-items: center; gap: 8px; min-height: 22px; }
+  .spin { width: 14px; height: 14px; border: 2px solid var(--bord); border-top-color: var(--bleu); border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+  .sbar.loading .spin { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 1.5rem auto 4rem; padding: 0 2rem; }
+
+  .empty { text-align: center; padding: 5rem 2rem; color: var(--txt2); }
+  .empty .ico { font-size: 52px; opacity: .2; margin-bottom: 1rem; }
+  .empty h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--txt); }
+  .empty p  { font-size: 14px; max-width: 400px; margin: 0 auto; line-height: 1.7; }
+
+  .stats { background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); padding: 12px 20px; display: flex; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+  .stat { text-align: center; }
+  .stat-n { font-size: 22px; font-weight: 700; color: var(--bleu); }
+  .stat-l { font-size: 11px; color: var(--txt2); text-transform: uppercase; letter-spacing: .4px; }
+
+  .section { margin-bottom: 2.5rem; }
+  .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .sec-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .sec-head h2 { font-size: 15px; font-weight: 700; }
+  .sec-cnt { font-size: 12px; color: var(--txt2); margin-left: auto; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+
+  .card { background: var(--blanc); border: 1px solid var(--bord); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--ombre); transition: box-shadow .15s; }
+  .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,.10); }
+
+  .cmeta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .src { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: .4px; border: 1px solid; }
+  .cdate { font-size: 11px; color: var(--txt2); margin-left: auto; }
+
+  .ctitle { font-size: 14px; font-weight: 700; line-height: 1.4; color: var(--noir); }
+  .csum   { font-size: 13px; color: var(--txt); line-height: 1.6; flex: 1; }
+  .csum em { color: var(--txt2); font-style: italic; }
+
+  .cfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid var(--bord); flex-wrap: wrap; }
+  .niveaux { display: flex; gap: 4px; flex-wrap: wrap; }
+  .ntag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: var(--fond); color: var(--txt2); border: 1px solid var(--bord); }
+  .clink { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--bleu); text-decoration: none; white-space: nowrap; }
+  .clink:hover { text-decoration: underline; }
+
+  .err-card { background: #fff3f3; border: 1px solid #f5c0c0; border-radius: var(--r); padding: 16px 20px; font-size: 13px; color: #900; line-height: 1.7; }
+  .err-card strong { font-weight: 600; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 12px; color: var(--txt2); border-top: 1px solid var(--bord); background: var(--blanc); }
+
+  @media (max-width: 640px) {
+    header, .filtres { padding: 0 1rem; }
+    main, .status-zone { padding: 0 1rem; }
+    .grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    header, .filtres, .status-zone, .btn-gen, .btn-sec, .clink { display: none !important; }
+    body { background: #fff; }
+    .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hinner">
+    <div class="htitle">
+      <h1>📰 Veille informationnelle</h1>
+      <p>ST2S · BTS SP3S · CAPET SMS — revue de presse hebdomadaire</p>
+    </div>
+    <div class="hbtns">
+      <button class="btn-sec" onclick="window.print()">🖨️ PDF</button>
+      <button class="btn-gen" id="btnGen" onclick="generer()">🔄 Générer la revue</button>
+    </div>
+  </div>
+</header>
+
+<div class="filtres">
+  <div class="finner">
+    <span class="flabel">Thèmes</span>
+    <div class="themes">
+      <button class="tbtn on" data-id="sante">🫀 Santé publique</button>
+      <button class="tbtn on" data-id="social">🛡️ Protection sociale</button>
+      <button class="tbtn on" data-id="politiques">🏛️ Politiques publiques</button>
+      <button class="tbtn on" data-id="societe">👥 Société & inégalités</button>
+      <button class="tbtn on" data-id="travail">🤝 Travail social</button>
+    </div>
+  </div>
+</div>
+
+<div class="status-zone">
+  <div class="sbar" id="sbar">
+    <div class="spin"></div>
+    <span id="stxt">Prête à générer ta revue de presse.</span>
+  </div>
+</div>
+
+<main id="main">
+  <div class="empty">
+    <div class="ico">📰</div>
+    <h2>Ta revue de presse hebdomadaire</h2>
+    <p>Clique sur <strong>Générer la revue</strong> pour récupérer les dernières publications de tes sources institutionnelles et médias.</p>
+  </div>
+</main>
+
+<footer>
+  Sources : HAS · Santé Publique France · ANSM · INSEE · Vie Publique · Légifrance · Assurance Maladie · Min. Travail · ASH · Le Monde · Libération · La Croix · Franceinfo
+</footer>
+
+<script>
+const T = {
+  sante:      { label:'Santé publique',      color:'#1a4480', bg:'#e8f0fb', niveaux:['1re ST2S','Tle ST2S'] },
+  social:     { label:'Protection sociale',  color:'#1b7a4a', bg:'#e6f4ee', niveaux:['Tle ST2S','BTS SP3S'] },
+  politiques: { label:'Politiques publiques',color:'#4a3b8c', bg:'#eeecfb', niveaux:['BTS SP3S','CAPET SMS'] },
+  societe:    { label:'Société & inégalités',color:'#8c3a1b', bg:'#fbeee9', niveaux:['1re ST2S','CAPET SMS'] },
+  travail:    { label:'Travail social',      color:'#7a4f0a', bg:'#fdf3e3', niveaux:['BTS SP3S','DECESF'] },
+};
+
+const API_URL = '/api/rss';
+let articles = [];
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.tbtn').forEach(b =>
+    b.addEventListener('click', () => b.classList.toggle('on'))
+  );
+});
+
+function setStatus(msg, loading = false) {
+  document.getElementById('stxt').textContent = msg;
+  document.getElementById('sbar').classList.toggle('loading', loading);
+}
+
+async function generer() {
+  const btn = document.getElementById('btnGen');
+  btn.disabled = true;
+  articles = [];
+
+  const actifs = [...document.querySelectorAll('.tbtn.on')].map(b => b.dataset.id);
+  if (!actifs.length) {
+    setStatus('⚠️ Sélectionne au moins un thème.');
+    btn.disabled = false;
+    return;
+  }
+
+  setStatus('📡 Récupération des flux RSS en cours…', true);
+
+  try {
+    const url = `${API_URL}?themes=${actifs.join(',')}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Erreur serveur : ${res.status}`);
+    const data = await res.json();
+    articles = data.articles || [];
+
+    if (articles.length === 0) {
+      setStatus('⚠️ Aucun article récupéré. Certains flux RSS sont peut-être temporairement indisponibles.');
+      document.getElementById('main').innerHTML = `<div class="err-card">
+        Aucun article n'a pu être récupéré cette fois-ci. Les sources institutionnelles peuvent être temporairement hors ligne.
+        <br><br>Réessaie dans quelques minutes — les flux sont généralement disponibles en semaine.
+      </div>`;
+    } else {
+      const now = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+      const nbSrc = new Set(articles.map(a => a.source)).size;
+      setStatus(`✅ Revue du ${now} — ${articles.length} articles · ${nbSrc} sources.`);
+      afficher(actifs);
+    }
+  } catch (err) {
+    setStatus('❌ Impossible de contacter le serveur.');
+    document.getElementById('main').innerHTML = `<div class="err-card">
+      <strong>Erreur :</strong> ${err.message}<br><br>
+      Vérifie que l'application est bien déployée sur Vercel et que la fonction <code>/api/rss</code> est active.
+    </div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }); }
+  catch { return ''; }
+}
+
+function afficher(actifs) {
+  const now = new Date();
+  let html = `
+    <div class="stats">
+      <div class="stat"><div class="stat-n">${articles.length}</div><div class="stat-l">Articles</div></div>
+      <div class="stat"><div class="stat-n">${new Set(articles.map(a=>a.source)).size}</div><div class="stat-l">Sources</div></div>
+      <div class="stat"><div class="stat-n">${actifs.length}</div><div class="stat-l">Thèmes</div></div>
+      <div style="margin-left:auto;font-size:12px;color:var(--txt2)">
+        Semaine du ${now.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}
+      </div>
+    </div>`;
+
+  for (const id of actifs) {
+    const th = T[id];
+    const arts = articles.filter(a => a.themeId === id);
+    if (!arts.length) continue;
+
+    const cards = arts.map(a => `
+      <div class="card">
+        <div class="cmeta">
+          <span class="src" style="background:${th.bg};color:${th.color};border-color:${th.color}33">${a.source}</span>
+          <span class="cdate">${fmtDate(a.date)}</span>
+        </div>
+        <div class="ctitle">${a.titre}</div>
+        <div class="csum">${a.resume ? a.resume : '<em>Résumé non disponible — clique sur l\'article pour le lire.</em>'}</div>
+        <div class="cfoot">
+          <div class="niveaux">${a.niveaux.map(n=>`<span class="ntag">${n}</span>`).join('')}</div>
+          <a class="clink" href="${a.url}" target="_blank" rel="noopener noreferrer">Lire l'article ↗</a>
+        </div>
+      </div>`).join('');
+
+    html += `
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-dot" style="background:${th.color}"></div>
+          <h2 style="color:${th.color}">${th.label}</h2>
+          <span class="sec-cnt">${arts.length} article${arts.length>1?'s':''}</span>
+        </div>
+        <div class="grid">${cards}</div>
+      </div>`;
+  }
+
+  document.getElementById('main').innerHTML = html;
+}
+</script>
+</body>
+</html>
